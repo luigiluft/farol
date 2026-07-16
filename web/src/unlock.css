@@ -1,0 +1,75 @@
+/* FAROL - estado vazio acionavel. Theme-safe: herda cor do tema via
+   currentColor/color-mix; nada de hex de tema hardcoded. */
+.unlock {
+  max-width: min(560px, 100%);
+  margin: 32px auto;
+  padding: 28px 30px 24px;
+  border: 1px solid color-mix(in srgb, currentColor 16%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, currentColor 4%, transparent);
+  text-align: left;
+}
+.unlock-badge {
+  display: inline-block;
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent, #3ddc84) 16%, transparent);
+  color: var(--accent, #3ddc84);
+  margin-bottom: 14px;
+}
+.unlock-title { font-size: 17px; font-weight: 700; margin: 0 0 8px; }
+.unlock-lead { font-size: 13.5px; line-height: 1.55; opacity: 0.75; margin: 0 0 14px; }
+.unlock-steps {
+  margin: 0 0 16px;
+  padding-left: 20px;
+  font-size: 13.5px;
+  line-height: 1.7;
+}
+.unlock-steps li { margin-bottom: 2px; }
+.unlock-example {
+  border: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.unlock-example-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  background: color-mix(in srgb, currentColor 6%, transparent);
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+}
+.unlock-example-label { opacity: 0.65; letter-spacing: 0.08em; }
+.unlock-copy {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  padding: 2px 10px;
+  border-radius: 6px;
+  border: 1px solid color-mix(in srgb, currentColor 22%, transparent);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.unlock-copy:hover { background: color-mix(in srgb, currentColor 8%, transparent); }
+.unlock-example pre {
+  margin: 0;
+  padding: 12px 14px;
+  font-family: var(--font-mono, monospace);
+  font-size: 12.5px;
+  line-height: 1.6;
+  overflow-x: auto;
+  white-space: pre;
+}
+.unlock-guia {
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  color: var(--accent, #3ddc84);
+  text-decoration: none;
+}
+.unlock-guia:hover { text-decoration: underline; }

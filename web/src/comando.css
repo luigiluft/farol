@@ -1,0 +1,180 @@
+/* FAROL - Comando do Dia (Frente 4, layout Bento). Escopado em .comando;
+   usa os tokens de tema do index.css. Spine do diario via --cmd-c (cor de
+   projeto, nao theme-ada por contrato). */
+
+.comando {
+  /* enquadramento: preencher a area central (antes 1040px deixava um vao
+     morto a direita em tela larga — feedback 2026-07-03) */
+  max-width: 1520px;
+  margin: 0 auto;
+  padding: 22px 26px 60px;
+}
+
+.cmd-day {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.cmd-title { font-size: 20px; font-weight: 700; color: var(--text-strong); letter-spacing: -0.01em; }
+.cmd-meta { font-size: 12px; color: var(--dim); }
+
+/* ---- bento ---- */
+.cmd-bento {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: minmax(54px, auto);
+  gap: 11px;
+}
+.cmd-pend { grid-column: span 2; grid-row: span 2; }
+.cmd-agenda { grid-column: span 2; grid-row: span 2; }
+.cmd-live { grid-column: span 2; }
+.cmd-vpend { grid-column: span 2; }
+.cmd-kpi { grid-column: span 1; }
+.cmd-esteira { grid-column: span 4; }
+.cmd-diary { grid-column: span 4; }
+
+/* ---- card ---- */
+.cmd-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 13px 15px;
+  box-shadow: 0 1px 3px var(--shadow);
+  min-width: 0;
+}
+.cmd-lbl {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--dim);
+  margin-bottom: 9px;
+}
+.cmd-n { color: var(--text-strong); font-weight: 700; }
+.cmd-state { font-size: 12px; margin: 4px 0; }
+
+.cmd-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  font-size: 13px;
+  min-width: 0;
+}
+.cmd-row + .cmd-row { border-top: 1px solid var(--border); }
+.cmd-clip { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cmd-when { margin-left: auto; font-size: 11px; color: var(--dim); flex: 0 0 auto; }
+
+.cmd-dot { width: 8px; height: 8px; border-radius: 50%; flex: 0 0 auto; }
+.cmd-dot.work { background: var(--accent); }
+.cmd-dot.wait { background: var(--ready); }
+.cmd-dot.idle { background: var(--amber); }
+.cmd-dot.sleep { background: var(--dim); }
+
+.cmd-strong { color: var(--text-strong); flex: 0 0 auto; }
+.cmd-dim { color: var(--dim); min-width: 0; }
+.cmd-mono { font-family: var(--font-mono); }
+.cmd-chk { font-family: monospace; color: var(--dim); flex: 0 0 auto; }
+.cmd-flag { color: var(--ready); flex: 0 0 auto; }
+.cmd-crit { color: var(--red); }
+
+.cmd-link {
+  display: inline-block;
+  margin-top: 9px;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  color: var(--cyan);
+  cursor: pointer;
+}
+.cmd-link:hover { text-decoration: underline; }
+
+/* ---- kpi ---- */
+.cmd-kpi-v { font-size: 22px; font-weight: 700; color: var(--text-strong); line-height: 1.1; }
+.cmd-kpi-v small { display: block; margin-top: 3px; font-size: 11px; font-weight: 400; color: var(--dim); }
+
+/* ---- diario compacto ---- */
+.cmd-drow {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 0 6px 10px;
+  border-left: 3px solid var(--cmd-c, var(--border-strong));
+  font-size: 12.5px;
+  min-width: 0;
+}
+.cmd-drow + .cmd-drow { margin-top: 2px; }
+.cmd-dproj { font-size: 12px; }
+.cmd-dchips { margin-left: auto; display: flex; gap: 5px; flex: 0 0 auto; }
+.cmd-chip {
+  font-size: 10.5px;
+  font-family: var(--font-mono);
+  color: var(--dim);
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 6px;
+  line-height: 1.5;
+}
+.cmd-chip.ship { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 35%, var(--border)); }
+.cmd-chip.link { cursor: pointer; color: var(--cyan); }
+.cmd-chip.link:hover { border-color: var(--cyan); }
+
+/* pendencia "esperando voce" clicavel com a PERGUNTA da sessao (v2) */
+.cmd-qrow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  width: 100%;
+  padding: 5px 0;
+  font-size: 13px;
+  min-width: 0;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+}
+.cmd-qrow + .cmd-qrow, .cmd-qrow + .cmd-row, .cmd-row + .cmd-qrow { border-top: 1px solid var(--border); }
+.cmd-qrow .cmd-q {
+  color: var(--ready);
+  font-style: italic;
+  min-width: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.cmd-qrow:hover .cmd-q { text-decoration: underline; }
+
+/* ---- v2: contexto das vivas, pendencias do vault, esteira, espera ---- */
+.cmd-wait-t { color: var(--ready); font-size: 11px; flex: 0 0 auto; font-family: var(--font-mono); }
+.cmd-ctx {
+  display: inline-flex; align-items: center; gap: 5px; flex: 0 0 auto;
+  font-size: 10px; font-family: var(--font-mono); color: var(--dim);
+}
+.cmd-ctx-trk { width: 40px; height: 5px; border-radius: 3px; background: var(--panel-2, var(--border)); overflow: hidden; }
+.cmd-ctx-fill { display: block; height: 100%; border-radius: 3px; background: var(--accent); }
+.cmd-ctx.hot { color: var(--red); }
+.cmd-ctx.hot .cmd-ctx-fill { background: var(--red); }
+
+.cmd-vp-st { flex: 0 0 auto; font-size: 12px; }
+.cmd-vp-t { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cmd-qrow:hover .cmd-vp-t { text-decoration: underline; }
+
+.cmd-est-row { display: flex; align-items: baseline; gap: 10px; font-size: 12.5px; min-width: 0; flex-wrap: wrap; }
+.cmd-est-item { min-width: 0; }
+.cmd-est-sep { color: var(--dim); }
+.cmd-ok { color: var(--accent); }
+.cmd-est-link { margin-top: 0; margin-left: auto; }
+
+/* refactor v2 F4: titulo editorial (serif display) */
+.cmd-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 24px;
+  letter-spacing: 0.02em;
+}

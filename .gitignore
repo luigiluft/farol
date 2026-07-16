@@ -1,0 +1,11 @@
+node_modules/
+dist/
+dist-next/
+dist-old/
+.env
+.backups/
+.data/
+server.out.log
+server.err.log
+.superpowers/
+.demo/

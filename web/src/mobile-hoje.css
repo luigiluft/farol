@@ -1,0 +1,151 @@
+/* ============================================================
+   FAROL - shell MOBILE: aba HOJE (Comando do Dia, feed em coluna).
+   Reusa a keyframe mb-wait-pulse (global em mobile.css).
+   ============================================================ */
+.mbh-feed {
+  gap: 14px;
+}
+
+.mbh-day {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.mbh-title {
+  font-family: var(--font-pixel);
+  font-size: 12px;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+}
+
+.mbh-meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--dim);
+}
+
+.mbh-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mbh-lbl {
+  margin: 0;
+  padding: 0 2px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+.mbh-n { color: var(--accent); }
+
+.mbh-state {
+  margin: 0;
+  padding: 6px 2px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--dim);
+}
+.mbh-state.crit { color: var(--red); }
+
+.mbh-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 11px;
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+.mbh-row.tap { border-left: 3px solid var(--mb-accent, var(--accent)); }
+.mbh-row.tap:active { transform: scale(0.99); }
+
+.mbh-strong { color: var(--text-strong); font-weight: 600; }
+.mbh-dim { color: var(--dim); }
+.mbh-mono { font-variant-numeric: tabular-nums; }
+.mbh-push { margin-left: auto; flex: 0 0 auto; }
+.mbh-model { color: var(--dim); font-size: 10px; }
+.mbh-clip {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.mbh-dot {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 auto;
+  align-self: center;
+  border-radius: 50%;
+  background: var(--dim);
+}
+.mbh-dot.work { background: var(--accent); }
+.mbh-dot.idle { background: var(--amber); }
+.mbh-dot.sleep { background: var(--dim); opacity: 0.5; }
+.mbh-dot.wait {
+  background: var(--ready);
+  box-shadow: 0 0 5px var(--ready);
+  animation: mb-wait-pulse 1.3s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .mbh-dot.wait { animation: none; }
+}
+
+.mbh-chk { color: var(--dim); flex: 0 0 auto; }
+.mbh-flag { color: var(--ready); flex: 0 0 auto; }
+
+.mbh-link {
+  align-self: flex-start;
+  padding: 6px 2px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--cyan);
+  background: none;
+}
+
+.mbh-drow {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 9px 11px;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--mb-accent, var(--accent));
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+
+.mbh-drow-top {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.mbh-hero {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text);
+}
+
+.mbh-chip {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--dim);
+  background: none;
+}
+.mbh-chip.ship { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+.mbh-chip.link { color: var(--cyan); margin-left: auto; }

@@ -1,0 +1,450 @@
+/* ============================================================
+   FAROL - design tokens + base (F7: tema claro default)
+   Direcao: sala de controle / radar. data-theme no <html> decide
+   a paleta; initTheme() roda antes do render (default = light).
+   Dark e o bloco BASE (fallback se o atributo faltar); light e
+   azul-papel FRIO intencional (nunca creme/dourado).
+   Regras duras: animacao SO transform/opacity; comentarios SO ASCII;
+   Press Start 2P SO em plaquinhas da Sala e no logo.
+   Alphas derivam dos tokens via color-mix (lista de tokens FECHADA).
+   ============================================================ */
+
+:root,
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  /* superficies — EDITORIAL DARK (refactor v2): void quase-preto neutro-quente,
+     paineis um passo acima, hairlines discretas (a borda nunca grita) */
+  --bg: #0a0a0c;
+  --bg-deep: #08080a;
+  --panel: #101014;
+  --panel-2: #16161b;
+  --border: #232229;
+  --border-strong: #3a3842;
+
+  /* texto — familia cream (monocromatico; cor so quando e ESTADO) */
+  --text: #cfcabf;
+  --text-strong: #ece7db;
+  --dim: #6b6459;
+
+  /* acentos semanticos — quente-editorial: ambar = vivo/trabalhando (era verde
+     radar); demais dessaturados pra nao competir com o cream */
+  --accent: #d9a75f;  /* vivo / ativo / trabalhando */
+  --amber: #e0b04a;   /* warn (um passo mais amarelo que o accent) */
+  --red: #d96a5a;     /* crit */
+  --cyan: #9db4be;    /* wikilinks / acoes (dessaturado) */
+  --violet: #a99bc4;  /* skills / busca semantica (dessaturado) */
+  --ready: #ff6b9d;   /* esperando voce (rosa segue sagrado) */
+
+  /* sombras e hover */
+  --shadow: rgba(0, 0, 0, 0.5);
+  --hover: rgba(236, 231, 219, 0.05);
+
+  /* tipografia (+ display serif editorial pra titulos) */
+  --font-ui: 'Inter', system-ui, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', Consolas, monospace;
+  --font-pixel: 'Press Start 2P', monospace;
+  --font-display: 'Fraunces', Georgia, serif;
+
+  /* ritmo */
+  --radius: 6px;
+  --gap: 12px;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  /* superficies */
+  --bg: #eef2f7;
+  --bg-deep: #e2e9f1;
+  --panel: #ffffff;
+  --panel-2: #f4f7fb;
+  --border: #d7dfe8;
+  --border-strong: #b9c6d3;
+
+  /* texto */
+  --text: #25303b;
+  --text-strong: #0f1822;
+  --dim: #67768a;
+
+  /* acentos semanticos */
+  --accent: #0c9e62;
+  --amber: #b26c0e;
+  --red: #cc3b32;
+  --cyan: #0a7f93;
+  --violet: #7a58c9;
+  --ready: #c43b7e;   /* F8: turno encerrado / esperando voce */
+
+  /* sombras e hover */
+  --shadow: rgba(35, 52, 70, 0.14);
+  --hover: rgba(10, 127, 147, 0.06);
+}
+
+/* ------------------------------------------------------------
+   densidade (Frente 2): compacto reduz o ritmo global. --gap move
+   os gaps das 3 zonas + cards; --radius arredonda tudo. Mais
+   especifico que o :root base (0,2,0 > 0,1,0) e os temas nao tocam
+   --gap/--radius, entao vence sem conflito em ambos os temas.
+   ------------------------------------------------------------ */
+:root[data-density='compact'] {
+  --gap: 8px;
+  --radius: 4px;
+}
+
+/* ------------------------------------------------------------
+   reset
+   ------------------------------------------------------------ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: var(--cyan);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+code,
+pre,
+kbd {
+  font-family: var(--font-mono);
+}
+
+/* ------------------------------------------------------------
+   scrollbars (seguem o tema via tokens)
+   ------------------------------------------------------------ */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 5px;
+  border: 2px solid var(--bg);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--dim);
+}
+
+/* ------------------------------------------------------------
+   utilitarias base
+   ------------------------------------------------------------ */
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px var(--shadow);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--cyan) 6%, transparent);
+  color: var(--cyan);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.btn-tab {
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel);
+  color: var(--dim);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: transform 120ms ease, opacity 120ms ease;
+}
+
+.btn-tab:hover {
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+.btn-tab:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.btn-tab.active {
+  color: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.dim {
+  color: var(--dim);
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+/* ------------------------------------------------------------
+   scanlines + flicker CRT (usar SO dentro da Sala)
+   so transform/opacity sao animados
+   ------------------------------------------------------------ */
+.scanlines {
+  position: relative;
+  overflow: hidden;
+}
+
+.scanlines::after {
+  content: '';
+  position: absolute;
+  inset: -4px 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--text) 4%, transparent) 0px,
+    color-mix(in srgb, var(--text) 4%, transparent) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  animation: scanline-drift 9s linear infinite;
+}
+
+@keyframes scanline-drift {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(3px);
+  }
+}
+
+@keyframes crt-flicker {
+  0%,
+  91%,
+  94%,
+  100% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 0.96;
+  }
+  97% {
+    opacity: 0.98;
+  }
+}
+
+/* ------------------------------------------------------------
+   layout 3 zonas (base do scaffold; App.jsx (M) refina)
+   ------------------------------------------------------------ */
+.app-shell {
+  display: grid;
+  grid-template-columns: 260px 1fr 340px;
+  gap: var(--gap);
+  height: 100%;
+  padding: var(--gap);
+}
+
+/* Coluna esquerda colapsa pra 0 mas o item FICA no fluxo do grid
+   (display:none deslocava o centro uma coluna - bug visto 02/07).
+   Painel OPERACOES da direita removido (2026-07-10): centro ocupa tudo. */
+.app-shell.left-hidden {
+  grid-template-columns: 0 minmax(0, 1fr);
+}
+.app-shell.left-hidden .zone-left {
+  visibility: hidden;
+  overflow: hidden;
+  padding: 0;
+  border: none;
+  min-width: 0;
+}
+
+.zone-left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  padding: 14px;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.zone-center {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  min-width: 0;
+  min-height: 0;
+}
+
+.center-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap);
+}
+
+.center-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.center-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.tabs {
+  display: flex;
+  gap: 6px;
+}
+
+.breadcrumb {
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.logo-pixel {
+  font-family: var(--font-pixel);
+  font-size: 14px;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+  padding: 6px 2px;
+  user-select: none;
+}
+
+/* logo movido pro header (Opcao B: coluna esquerda colapsada); agrupa com o
+   titulo/breadcrumb a esquerda, tabs+acoes ficam a direita (space-between). */
+.center-head-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.center-logo {
+  font-family: var(--font-pixel);
+  font-size: 12px;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* toggle sol/lua do tema: convive com as tabs no center-header */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel);
+  color: var(--dim);
+  transition: transform 120ms ease, opacity 120ms ease;
+}
+
+.theme-toggle:hover {
+  color: var(--amber);
+  transform: translateY(-1px);
+}
+
+.theme-toggle:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle,
+  .btn-tab {
+    transition: none;
+  }
+}
+
+.search-input {
+  width: 100%;
+  padding: 7px 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.search-input::placeholder {
+  color: var(--dim);
+}
+
+.search-input:focus-visible {
+  outline: 1px solid var(--cyan);
+  outline-offset: 1px;
+}
+
+/* placeholder dos stubs de modulo */
+.stub-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80px;
+  padding: 16px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  color: var(--dim);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-align: center;
+}

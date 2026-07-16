@@ -1,0 +1,182 @@
+/* ============================================================
+   FAROL - command palette (A3, F2)
+   Modal central com backdrop blur. Animacao SO transform/opacity.
+   Comentarios 100% ASCII.
+   ============================================================ */
+
+.pal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 14vh;
+  background: color-mix(in srgb, var(--bg-deep) 60%, transparent);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: pal-fade 120ms ease;
+}
+
+@keyframes pal-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.pal-panel {
+  width: min(620px, calc(100vw - 48px));
+  max-height: 62vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform-origin: top center;
+  animation: pal-pop 140ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes pal-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.98) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.pal-input-row {
+  position: relative;
+  flex-shrink: 0;
+  padding: 12px 12px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.pal-input {
+  width: 100%;
+  padding: 9px 42px 9px 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.pal-input::placeholder {
+  color: var(--dim);
+}
+
+.pal-input:focus-visible {
+  outline: 1px solid var(--cyan);
+  outline-offset: 1px;
+}
+
+.pal-brain {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  padding: 6px;
+  border-radius: 4px;
+  color: var(--dim);
+  transition: opacity 120ms ease;
+}
+
+.pal-brain:hover {
+  color: var(--text);
+}
+
+.pal-brain:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.pal-brain.on {
+  color: var(--accent);
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--accent) 55%, transparent));
+}
+
+.pal-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 6px;
+}
+
+.pal-status {
+  padding: 12px;
+  font-size: 11px;
+}
+
+.pal-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 4px;
+  text-align: left;
+  transition: transform 100ms ease;
+}
+
+.pal-item.selected {
+  background: color-mix(in srgb, var(--cyan) 9%, transparent);
+  transform: translateX(2px);
+}
+
+.pal-kind {
+  flex-shrink: 0;
+  width: 46px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.pal-kind.kind-acao {
+  color: color-mix(in srgb, var(--accent) 75%, transparent);
+}
+
+.pal-kind.kind-busca {
+  color: var(--violet);
+}
+
+.pal-item.selected .pal-kind.kind-nota {
+  color: var(--cyan);
+}
+
+.pal-label {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pal-sub {
+  flex-shrink: 0;
+  max-width: 45%;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pal-foot {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  border-top: 1px solid var(--border);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+}

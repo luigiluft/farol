@@ -1,0 +1,125 @@
+/* ============================================================
+   FAROL - transicoes de view + painel direito + shimmer (A3, F2)
+   Regras duras: animacao SO transform/opacity. Comentarios ASCII.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   troca de tab: conteudo antigo sai (fade + translateY 6px),
+   novo entra na mesma transicao apos o swap (120ms)
+   ------------------------------------------------------------ */
+.view-fade {
+  transition: opacity 120ms ease, transform 120ms ease;
+  animation: view-in 120ms ease;
+}
+
+.view-fade.out {
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+.center-body.is-full .view-fade {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+}
+
+.center-body.is-full .view-fade > * {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* ------------------------------------------------------------
+   host persistente do terminal: fica montado (display none)
+   ao trocar de tab para a sessao do PTY nao morrer
+   ------------------------------------------------------------ */
+.terminal-host {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.terminal-host.out {
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+.terminal-host.hidden {
+  display: none;
+}
+
+.terminal-host > * {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+}
+
+.terminal-host:not(.hidden) {
+  animation: view-in 120ms ease;
+}
+
+@keyframes view-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* ------------------------------------------------------------
+   shimmer sutil nos skeletons (nota, projetos e arvore podem
+   reusar .skel; o brilho anda por transform, nunca background-pos)
+   ------------------------------------------------------------ */
+.skel {
+  position: relative;
+  overflow: hidden;
+}
+
+.skel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 25%,
+    color-mix(in srgb, var(--text) 9%, transparent) 50%,
+    transparent 75%
+  );
+  transform: translateX(-100%);
+  animation: skel-shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes skel-shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* skeleton da arvore: classes prontas para Tree.jsx adotar no loading
+   (markup sugerido: div.tree-skel > 6x div.skel) */
+.tree-skel {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 10px 8px;
+}
+
+.tree-skel .skel {
+  height: 14px;
+  border-radius: 4px;
+}
+
+.tree-skel .skel:nth-child(odd) {
+  width: 82%;
+}
+
+.tree-skel .skel:nth-child(even) {
+  width: 64%;
+}

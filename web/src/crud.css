@@ -1,0 +1,26 @@
+/* FAROL - CRUD da arvore (Path 1). Menu de contexto + dialog reusam .panel
+   (background real do tema); demais cores via currentColor/color-mix/var(--accent). */
+.tree-toolbar { display: flex; gap: 6px; padding: 2px 8px 8px; }
+.tree-tool-btn { flex: 1; font: inherit; font-size: .78rem; padding: 5px 8px; border-radius: 7px; cursor: pointer; border: 1px solid color-mix(in srgb, currentColor 16%, transparent); background: color-mix(in srgb, currentColor 4%, transparent); color: inherit; }
+.tree-tool-btn:hover { border-color: color-mix(in srgb, var(--accent, currentColor) 50%, transparent); background: color-mix(in srgb, var(--accent, currentColor) 9%, transparent); }
+.tree-op-error { margin: 0 8px 8px; padding: 6px 8px; font-size: .76rem; border-radius: 6px; background: color-mix(in srgb, crimson 16%, transparent); border: 1px solid color-mix(in srgb, crimson 38%, transparent); }
+
+.tree-ctx { position: fixed; z-index: 60; min-width: 184px; padding: 5px; border-radius: 9px; border: 1px solid color-mix(in srgb, currentColor 18%, transparent); box-shadow: 0 8px 28px rgba(0,0,0,.28); }
+.tree-ctx .ctx-path { padding: 4px 10px 6px; font-size: .72rem; opacity: .6; word-break: break-all; }
+.tree-ctx .ctx-sep { height: 1px; margin: 4px 2px; background: color-mix(in srgb, currentColor 12%, transparent); }
+.tree-ctx button { display: block; width: 100%; text-align: left; font: inherit; font-size: .84rem; padding: 7px 10px; border: 0; border-radius: 6px; background: transparent; color: inherit; cursor: pointer; }
+.tree-ctx button:hover { background: color-mix(in srgb, var(--accent, currentColor) 12%, transparent); }
+.tree-ctx button.danger { color: color-mix(in srgb, crimson 80%, currentColor); }
+.tree-ctx button.danger:hover { background: color-mix(in srgb, crimson 18%, transparent); }
+
+.tdialog-overlay { position: fixed; inset: 0; z-index: 70; display: grid; place-items: center; background: color-mix(in srgb, black 42%, transparent); }
+.tdialog { width: min(460px, 92vw); padding: 18px; border-radius: 12px; border: 1px solid color-mix(in srgb, currentColor 16%, transparent); box-shadow: 0 18px 50px rgba(0,0,0,.4); }
+.tdialog h3 { margin: 0 0 4px; font-size: 1rem; }
+.tdialog .tdialog-sub { font-size: .78rem; opacity: .65; margin: 0 0 12px; word-break: break-all; }
+.tdialog input { width: 100%; box-sizing: border-box; font: inherit; padding: 9px 11px; border-radius: 8px; border: 1px solid color-mix(in srgb, currentColor 22%, transparent); background: color-mix(in srgb, currentColor 5%, transparent); color: inherit; }
+.tdialog input:focus { outline: none; border-color: var(--accent, currentColor); }
+.tdialog-err { margin: 8px 0 0; font-size: .78rem; color: color-mix(in srgb, crimson 80%, currentColor); }
+.tdialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+.tdialog-actions button { font: inherit; font-size: .85rem; padding: 7px 14px; border-radius: 8px; cursor: pointer; border: 1px solid color-mix(in srgb, currentColor 18%, transparent); background: transparent; color: inherit; }
+.tdialog-actions button.primary { background: var(--accent, currentColor); border-color: var(--accent, currentColor); color: var(--accent-fg, #fff); }
+.tdialog-actions button:disabled { opacity: .5; cursor: default; }

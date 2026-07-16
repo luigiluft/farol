@@ -1,0 +1,518 @@
+/* ============================================================
+   FAROL - cockpit de terminal (A3/F2; F7 espelho multi-aba)
+   100% tokens (zero hex hardcoded). Animation: transform and
+   opacity only, with reduced-motion guard at the end.
+   Comments ASCII only.
+   ============================================================ */
+
+.term-wrap {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  background: var(--bg-deep);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+/* ---------------- tab strip ---------------- */
+
+.term-tabs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+  padding: 4px 8px 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--panel);
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+.term-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding: 5px 10px;
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-radius: var(--radius) var(--radius) 0 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--dim);
+  white-space: nowrap;
+  transition: opacity 120ms ease;
+}
+
+.term-tab:hover {
+  color: var(--text);
+  background: var(--hover);
+}
+
+.term-tab.active {
+  color: var(--text-strong);
+  background: var(--bg-deep);
+  border-color: var(--border);
+}
+
+/* tema claro: bg-deep ~ strip, entao a ativa vira pill branco com contorno
+   forte + sublinhado 2px accent (inset: nao mexe em layout) */
+:root[data-theme='light'] .term-tab.active {
+  background: var(--panel);
+  border-color: var(--border-strong);
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+.term-tab.ended {
+  opacity: 0.75;
+}
+
+.term-tab:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: -1px;
+}
+
+.tab-label {
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tab-sub {
+  font-size: 10px;
+  color: var(--dim);
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tab-badge {
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border: 1px solid color-mix(in srgb, var(--red) 50%, transparent);
+  border-radius: 999px;
+  color: var(--red);
+}
+
+/* LED por estado da aba (sessao ou PTY local). Cada estado espelha o bg
+   em color para o halo da aba ativa herdar via currentColor. */
+.tab-led {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--dim);
+  color: var(--dim);
+}
+
+.tab-led.led-ativa,
+.tab-led.led-aberto {
+  background: var(--accent);
+  color: var(--accent);
+  animation: term-led-pulse 1.6s ease-in-out infinite;
+}
+
+.tab-led.led-ociosa {
+  background: var(--amber);
+  color: var(--amber);
+}
+
+.tab-led.led-conectando {
+  background: var(--amber);
+  color: var(--amber);
+  animation: term-led-pulse 1.2s ease-in-out infinite;
+}
+
+.tab-led.led-dormindo,
+.tab-led.led-fechado {
+  background: var(--dim);
+  color: var(--dim);
+}
+
+.tab-led.led-encerrada,
+.tab-led.led-erro {
+  background: var(--red);
+  color: var(--red);
+}
+
+/* LED da aba ativa fica vivo: halo estatico na cor do proprio estado */
+.term-tab.active .tab-led {
+  box-shadow: 0 0 4px 1px currentColor;
+}
+
+@keyframes term-led-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* dropdown +N adormecidas */
+.term-drop {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  padding-bottom: 4px;
+}
+
+.term-drop-btn {
+  padding: 3px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--dim);
+  white-space: nowrap;
+  transition: transform 120ms ease, opacity 120ms ease;
+}
+
+.term-drop-btn:hover {
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+.term-drop-menu {
+  position: absolute;
+  top: calc(100% + 2px);
+  right: 0;
+  z-index: 30;
+  min-width: 220px;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--panel);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px var(--shadow);
+}
+
+.term-drop-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 8px;
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text);
+  text-align: left;
+}
+
+.term-drop-item:hover {
+  background: var(--hover);
+}
+
+.term-drop-item .tab-sub {
+  margin-left: auto;
+}
+
+/* ---------------- body / panes ---------------- */
+
+.term-body {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+}
+
+.local-pane,
+.mirror-pane {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.local-pane.hidden,
+.mirror-pane.hidden {
+  display: none;
+}
+
+.term-empty {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  font-size: 12px;
+  color: var(--dim);
+  text-align: center;
+}
+
+/* ---------------- aba local (PTY) ---------------- */
+
+.term-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--panel);
+  font-size: 11px;
+}
+
+.term-title {
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.term-status {
+  font-size: 10px;
+  letter-spacing: 0.06em;
+}
+
+.term-status.st-conectando {
+  color: var(--amber);
+}
+
+.term-status.st-aberto {
+  color: var(--accent);
+}
+
+.term-status.st-fechado {
+  color: var(--dim);
+}
+
+.term-status.st-erro {
+  color: var(--red);
+}
+
+.term-reconnect {
+  margin-left: auto;
+  padding: 3px 12px;
+  border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
+  border-radius: var(--radius);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  transition: transform 120ms ease, opacity 120ms ease;
+}
+
+.term-reconnect:hover {
+  transform: translateY(-1px);
+}
+
+.term-host {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 8px 4px 8px 10px;
+}
+
+.term-host .xterm {
+  height: 100%;
+}
+
+/* barra de teclas touch (mobile): so aparece com a prop touchKeys do LocalPane */
+.term-keys {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+  padding: 6px 8px;
+  overflow-x: auto;
+  border-top: 1px solid var(--border);
+  background: var(--panel);
+}
+
+.term-key {
+  flex: 0 0 auto;
+  min-width: 44px;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1;
+  transition: background 120ms ease;
+}
+
+.term-key:active {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  color: var(--accent);
+}
+
+/* ---------------- painel espelho ---------------- */
+
+.mirror-ended {
+  flex-shrink: 0;
+  padding: 5px 12px;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--red);
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--red) 7%, transparent);
+}
+
+.mirror-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 10px 14px 16px;
+  background: var(--bg-deep);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.5;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+/* bloco interno ancorado no fundo (estilo terminal): sessao curta nao deixa
+   vazio morto; com overflow o margin-top colapsa e o scroll segue normal */
+.mirror-lines {
+  margin-top: auto;
+}
+
+.mir-line {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0 0 2px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.mir-ts {
+  flex-shrink: 0;
+  width: 58px;
+  font-size: 10px;
+  color: var(--dim);
+  user-select: none;
+}
+
+.mir-prompt {
+  flex-shrink: 0;
+  color: var(--accent);
+}
+
+.mir-user .mir-body {
+  color: var(--text-strong);
+  font-weight: 600;
+}
+
+.mir-text .mir-body {
+  color: var(--text);
+}
+
+.mir-tool {
+  color: color-mix(in srgb, var(--cyan) 75%, var(--dim));
+}
+
+.mir-gear {
+  flex-shrink: 0;
+}
+
+.mir-tool .mir-body {
+  color: inherit;
+}
+
+.mir-result .mir-body {
+  display: block;
+  padding-left: 8px;
+  border-left: 2px solid var(--border-strong);
+  font-size: 12px;
+  color: var(--dim);
+}
+
+/* tema claro: result mais apagado (60% dim) + fundo sutil separa do 'text';
+   a barra esquerda permanece como ancora visual */
+:root[data-theme='light'] .mir-result .mir-body {
+  color: color-mix(in srgb, var(--dim) 60%, var(--bg-deep));
+  background: var(--hover);
+  border-radius: 0 4px 4px 0;
+}
+
+.mir-meta .mir-body {
+  font-size: 11px;
+  font-style: italic;
+  color: var(--dim);
+}
+
+/* linha de status fixa no rodape: callsign + ultima atividade */
+.mirror-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  padding: 4px 14px;
+  border-top: 1px solid var(--border);
+  background: var(--panel);
+  font-size: 10px;
+  color: var(--dim);
+}
+
+.mirror-status-callsign {
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+/* badge 'novas linhas' quando o usuario saiu do fim (acima do rodape) */
+.mirror-newlines {
+  position: absolute;
+  right: 16px;
+  bottom: 34px;
+  padding: 4px 12px;
+  border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  box-shadow: 0 4px 12px var(--shadow);
+  transition: transform 120ms ease, opacity 120ms ease;
+  animation: term-badge-in 140ms ease;
+}
+
+.mirror-newlines:hover {
+  transform: translateY(-1px);
+}
+
+@keyframes term-badge-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------------- reduced motion guard ---------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .tab-led,
+  .mirror-newlines,
+  .term-drop-btn,
+  .term-reconnect,
+  .term-tab {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .term-drop-btn:hover,
+  .term-reconnect:hover,
+  .mirror-newlines:hover {
+    transform: none !important;
+  }
+}

@@ -1,0 +1,84 @@
+/* FAROL - hud-chips.css: placar da tripulação no estilo v5 (espelha o
+   look dos .sd-chip da Sala). Scoped .hudc-* pra ser reusável em qualquer
+   surface (TORRE, futuros) sem depender do .station-deck. */
+.hudc-strip { display: flex; gap: 10px; }
+.hudc-chip {
+  display: flex; flex-direction: column; gap: 3px; min-width: 100px; padding: 7px 13px;
+  border-radius: 7px; background: linear-gradient(180deg, #121b24, #0c131a);
+  border: 1px solid #233140; border-top-color: #34465a;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, .4);
+}
+.hudc-k {
+  font-family: 'Silkscreen', 'JetBrains Mono', monospace; font-size: 8px;
+  letter-spacing: 1px; color: #7e8c9b; display: flex; align-items: center; gap: 5px;
+}
+.hudc-v {
+  font-family: 'Silkscreen', 'JetBrains Mono', monospace; font-size: 18px;
+  color: #f4fbff; line-height: 1;
+}
+.hudc-dot { width: 7px; height: 7px; border-radius: 2px; background: #8aa0b4; }
+.hudc-chip.work .hudc-dot { background: #5ea2ff; box-shadow: 0 0 7px #5ea2ff; }
+.hudc-chip.work .hudc-v { color: #9ec7ff; }
+.hudc-chip.wait { border-color: #5e2740; background: linear-gradient(180deg, #241019, #160a10); }
+.hudc-chip.wait .hudc-dot { background: #ff5fa2; box-shadow: 0 0 9px #ff5fa2; animation: hudc-blink 1.1s infinite; }
+.hudc-chip.wait .hudc-v { color: #ff5fa2; }
+.hudc-chip.done .hudc-dot { background: #3ddc84; box-shadow: 0 0 7px #3ddc84; }
+
+@keyframes hudc-blink { 0%, 100% { opacity: 1; } 50% { opacity: .4; } }
+/* ---- ESPERANDO VOCE clicavel: opt-in da Torre (waitQueue + onSelect) ----
+   O chip vira botao ancora + FILA (dropdown). Sem as props segue estatico.
+   pointer-events:auto re-liga o clique sob .torre-hud (que e pointer-events:none). */
+.hudc-chip.is-btn { position: relative; padding: 0; pointer-events: auto; }
+.hudc-chip-face {
+  display: flex; flex-direction: column; gap: 3px; align-items: flex-start;
+  width: 100%; padding: 7px 13px; text-align: left; cursor: pointer;
+  font: inherit; color: inherit; background: none; border: 0; border-radius: 7px;
+  transition: transform 120ms ease;
+}
+.hudc-chip-face:hover { transform: translateY(-1px); }
+.hudc-chip-face:focus-visible { outline: 1px solid var(--ready, #ff5fa2); outline-offset: 2px; }
+
+/* FILA: dropdown ancorado abaixo do chip (painel escuro estilo hudc, sinal rosa) */
+.hudc-queue {
+  position: absolute; top: calc(100% + 6px); left: 0; z-index: 30;
+  min-width: 250px; max-width: 330px; max-height: 320px; overflow-y: auto;
+  padding: 4px; pointer-events: auto;
+  background: linear-gradient(180deg, #121b24, #0c131a);
+  border: 1px solid #5e2740; border-radius: 8px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, .5);
+}
+.hudc-q-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.hudc-q-row {
+  display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 8px;
+  text-align: left; cursor: pointer; background: none; border: 0; border-radius: 6px;
+  color: #c7d3de; font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  transition: transform 120ms ease;
+}
+.hudc-q-row:hover { background: rgba(255, 95, 162, .1); transform: translateX(1px); }
+.hudc-q-row:focus-visible { outline: 1px solid var(--ready, #ff5fa2); outline-offset: -1px; }
+.hudc-q-name { flex: 0 0 auto; color: #f4fbff; letter-spacing: .04em; }
+.hudc-q-ago { flex: 0 0 auto; color: #ff8fbc; font-size: 10px; }
+.hudc-q-act {
+  flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap; color: #7e8c9b; font-size: 10px;
+}
+
+/* botao "explorar" (opt-in Torre via onGoView): abre a view do grafo.
+   Ausente onGoView, nao renderiza (Sala/mobile ficam sem o botao). */
+.hudc-explore {
+  align-self: center; pointer-events: auto; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  width: 34px; min-width: 34px; height: 34px; padding: 0; font-size: 15px; line-height: 1;
+  background: linear-gradient(180deg, #121b24, #0c131a);
+  border: 1px solid #233140; border-top-color: #34465a; border-radius: 7px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, .4);
+  transition: transform 120ms ease, border-color 120ms ease;
+}
+.hudc-explore:hover { transform: translateY(-1px); border-color: #5ea2ff; }
+.hudc-explore:focus-visible { outline: 1px solid #5ea2ff; outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hudc-chip.wait .hudc-dot { animation: none; }
+  .hudc-chip-face, .hudc-q-row, .hudc-explore { transition: none; }
+  .hudc-chip-face:hover, .hudc-q-row:hover, .hudc-explore:hover { transform: none; }
+}

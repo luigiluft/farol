@@ -1,0 +1,18 @@
+.kb-board { display: flex; gap: 12px; align-items: flex-start; overflow-x: auto;
+  padding: 4px 2px 14px; }
+.kb-col { min-width: 230px; max-width: 280px; flex: 0 0 auto; padding: 10px; }
+.kb-col-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+.kb-col-title { font-weight: 700; font-size: 12.5px; letter-spacing: .04em; }
+.kb-col-count { font-size: 11px; opacity: .55; }
+.kb-cards { display: flex; flex-direction: column; gap: 6px; }
+.kb-card { font-size: 12.5px; line-height: 1.4; padding: 7px 9px; border-radius: var(--radius, 6px);
+  border: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+  background: color-mix(in srgb, currentColor 5%, transparent); }
+.kb-done { opacity: .55; text-decoration: line-through; }
+.kb-link { color: var(--accent, inherit); cursor: pointer; text-decoration: none; }
+.kb-link:hover { text-decoration: underline; }
+.kb-link-broken { color: color-mix(in srgb, var(--red, #c33) 55%, var(--dim, currentColor));
+  border-bottom: 1px dashed color-mix(in srgb, var(--red, #c33) 50%, transparent);
+  cursor: default; }
+.kb-col-empty { opacity: .4; font-size: 12px; padding: 4px 2px; }
+.kb-empty { opacity: .6; padding: 16px; }

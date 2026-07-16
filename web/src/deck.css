@@ -1,0 +1,408 @@
+/* FAROL - deck.css (v5 salas temáticas por empresa).
+   Skin do diorama da Sala fullscreen, portado fiel da simulação v5
+   (torre-sala-sim.html, validada com o dono 2026-06-23). Stage de design
+   FIXO 1500x900 escalado por --sd-scale (JS mede o container) -> proporções
+   pixel-fiéis ao mock em qualquer tamanho. Tudo prefixado .sd-* pra não
+   colidir com room.css (.bay/.chip) nem scene.css (.st-*). Sprites de
+   mobília (mesa/cadeira/avatar/nave/café/breach/holo) vêm dos componentes
+   reais do app; aqui mora só o layout + a cenografia da estação. */
+
+/* .panel.station-deck: especificidade > .panel — no tema claro o .panel
+   pintava o host de branco e a sobra do fit-contain virava letterbox. */
+.panel.station-deck {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #02040a;
+
+  --st-hull-dark: #1d2630;
+  --st-hull-mid: #2a3742;
+  --st-hull-light: #46586c;
+  --st-rivet: #6b7c8d;
+  --st-outline: #05080d;
+  --st-white: #f4fbff;
+  --st-glass: rgba(127, 214, 232, 0.18);
+  --st-glass-edge: rgba(127, 214, 232, 0.42);
+  --sd-floor-a: #181d26;
+  --sd-floor-b: #11161d;
+  --sd-wall-a: #0a0f15;
+  --sd-wall-b: #15202c;
+  --sd-ready: #ff5fa2;
+  --sd-bg: #06090d;
+  --sd-ink: #cdd9e4;
+  --sd-ink-dim: #7e8c9b;
+  --sd-pixel: 'Silkscreen', 'JetBrains Mono', monospace;
+  --sd-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --sd-scale: 1;
+}
+
+/* Stage de design fixo: posicionamento absoluto calibrado em 1500x900,
+   reescalado pra caber no container sem distorcer. */
+.sd-stage {
+  position: relative;
+  width: 1500px;
+  height: 900px;
+  flex: 0 0 auto;
+  overflow: hidden;
+  background: var(--sd-bg);
+  border: 1px solid #1b2530;
+  color: var(--sd-ink);
+  font-family: var(--sd-mono);
+  transform: scale(var(--sd-scale));
+  transform-origin: center center;
+}
+
+@keyframes sd-blink { 0%, 100% { opacity: 1 } 50% { opacity: .4 } }
+.sd-blink { animation: sd-blink 1s steps(1) infinite; }
+
+/* ---------- HUD ---------- */
+.sd-hud {
+  position: absolute; inset: 0 0 auto 0; height: 54px; z-index: 40;
+  display: flex; align-items: center; gap: 18px; padding: 0 18px;
+  background: linear-gradient(180deg, #0d141c, #0a1017);
+  border-bottom: 1px solid var(--st-outline);
+  box-shadow: 0 1px 0 #2a3742 inset, 0 8px 18px rgba(0, 0, 0, .5);
+}
+.sd-brand { display: flex; align-items: center; gap: 10px; font-family: var(--sd-pixel); font-size: 13px; letter-spacing: 1px; color: var(--st-white); }
+.sd-mark { width: 16px; height: 16px; border-radius: 3px; background: conic-gradient(from 45deg, #3ddc84, #4dd0e1, #b48cfa, #3ddc84); box-shadow: 0 0 10px #4dd0e155; }
+.sd-live { display: flex; align-items: center; gap: 6px; font-family: var(--sd-pixel); font-size: 9px; color: #7be0a8; letter-spacing: 1px; }
+.sd-live-led { width: 7px; height: 7px; border-radius: 50%; background: #3ddc84; box-shadow: 0 0 8px #3ddc84; animation: sd-blink 2.4s infinite; }
+.sd-chips { display: flex; gap: 10px; margin-left: auto; }
+.sd-chip { display: flex; flex-direction: column; gap: 3px; min-width: 104px; padding: 7px 13px; border-radius: 7px; background: linear-gradient(180deg, #121b24, #0c131a); border: 1px solid #233140; border-top-color: #34465a; }
+.sd-chip-k { font-family: var(--sd-pixel); font-size: 8px; letter-spacing: 1px; color: var(--sd-ink-dim); display: flex; align-items: center; gap: 5px; }
+.sd-chip-v { font-family: var(--sd-pixel); font-size: 18px; color: var(--st-white); line-height: 1; }
+.sd-chip-dot { width: 7px; height: 7px; border-radius: 2px; }
+.sd-chip.crew .sd-chip-dot { background: #8aa0b4; }
+.sd-chip.work .sd-chip-dot { background: #5ea2ff; box-shadow: 0 0 7px #5ea2ff; }
+.sd-chip.work .sd-chip-v { color: #9ec7ff; }
+.sd-chip.wait { border-color: #5e2740; background: linear-gradient(180deg, #241019, #160a10); }
+.sd-chip.wait .sd-chip-dot { background: var(--sd-ready); box-shadow: 0 0 9px var(--sd-ready); animation: sd-blink 1.1s infinite; }
+.sd-chip.wait .sd-chip-v { color: var(--sd-ready); }
+.sd-chip.done .sd-chip-dot { background: #3ddc84; box-shadow: 0 0 7px #3ddc84; }
+
+/* ---------- janela / parede / piso ---------- */
+.sd-window { position: absolute; left: 0; right: 0; top: 54px; height: 138px; z-index: 1; overflow: hidden; background: radial-gradient(120% 150% at 50% -20%, #0a1830 0%, #04070b 62%); border-bottom: 2px solid var(--st-outline); }
+.sd-frame { position: absolute; inset: 0; box-shadow: inset 0 0 0 2px #0c1a26, inset 0 0 60px rgba(0, 0, 0, .6); }
+.sd-mull { position: absolute; top: 0; bottom: 0; width: 3px; background: var(--st-hull-mid); box-shadow: 1px 0 0 #46586c; }
+.sd-stars { position: absolute; inset: 0; }
+.sd-gx { position: absolute; border-radius: 50%; filter: blur(.3px); }
+.sd-wall { position: absolute; inset: 192px 0 auto 0; height: 70px; z-index: 1; background: repeating-linear-gradient(to right, rgba(5, 8, 13, .45) 0 2px, transparent 2px 96px), linear-gradient(var(--sd-wall-a), var(--sd-wall-b)); border-bottom: 2px solid var(--st-outline); }
+.sd-floor { position: absolute; left: -30%; right: -30%; top: 262px; bottom: -16%; z-index: 0; transform-origin: 50% 0; transform: perspective(700px) rotateX(52deg); background: repeating-linear-gradient(to right, rgba(107, 124, 141, .10) 0 1px, transparent 1px 64px), repeating-linear-gradient(to bottom, rgba(107, 124, 141, .13) 0 1px, transparent 1px 52px), linear-gradient(var(--sd-floor-a), var(--sd-floor-b) 70%); }
+.sd-ledstrip { position: absolute; top: 48px; height: 2px; z-index: 39; background: #4dd0e1; opacity: .30; box-shadow: 0 0 8px #4dd0e1; }
+
+/* ---------- war-room (COMANDO) ---------- */
+.sd-warroom { position: absolute; left: 50%; top: 196px; transform: translateX(-50%); z-index: 8; width: 300px; text-align: center; }
+.sd-holo { position: relative; height: 42px; }
+.sd-gxh { position: absolute; border-radius: 50%; }
+.sd-wartable { position: relative; width: 230px; height: 34px; margin: 0 auto; border-radius: 50%; background: radial-gradient(closest-side, #223344, #0e1a26); border: 1px solid #34465a; box-shadow: 0 0 26px #4dd0e144, inset 0 0 12px #000; }
+.sd-wartable-glow { position: absolute; inset: 5px; border-radius: 50%; background: radial-gradient(closest-side, #4dd0e133, transparent); }
+.sd-warchair { position: absolute; width: 13px; height: 9px; border-radius: 3px; background: #2a3742; border: 1px solid #05080d; }
+.sd-warop { position: absolute; left: 50%; bottom: -2px; transform: translateX(-50%); z-index: 3; width: 40px; }
+.sd-warop .sd-crown { position: absolute; left: 50%; top: -12px; transform: translateX(-50%); font-size: 11px; z-index: 4; }
+.sd-warplate { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); font-family: var(--sd-pixel); font-size: 8px; letter-spacing: 1px; padding: 3px 10px; border-radius: 5px; background: linear-gradient(180deg, #10171f, #0a1016); color: #ffce8a; border: 1px solid #5a4420; border-bottom: 2px solid #ffb454; white-space: nowrap; z-index: 6; }
+.sd-warstat { position: absolute; bottom: -22px; left: 50%; transform: translateX(-50%); font-family: var(--sd-pixel); font-size: 7.5px; letter-spacing: 1px; white-space: nowrap; }
+.sd-warstat.calm { color: #5b6b7a; }
+.sd-warstat.pend { color: var(--sd-ready); text-shadow: 0 0 8px var(--sd-ready); animation: sd-blink 1.3s infinite; }
+.sd-warmtg { position: absolute; bottom: 0; display: flex; flex-direction: column; align-items: center; z-index: 4; width: 40px; }
+
+/* cenário Torre de Controle: radar + rack flanqueando o COMANDO. z entre a
+   parede (1) e o COMANDO (8); na faixa de parede/chão (y~200) entre a janela
+   (acaba 192) e o deck (começa 352), sem colidir com a war-table. */
+.sd-scenery { position: absolute; z-index: 6; filter: drop-shadow(0 2px 5px rgba(0, 0, 0, .55)); display: flex; }
+.sd-scenery svg { display: block; width: 100%; height: auto; }
+.sd-radar {
+  left: 23.5%; top: 198px; width: 62px;
+  /* glow leve pro anel não sumir na parede escura (critério handoff) */
+  filter: drop-shadow(0 0 7px rgba(77, 208, 225, .35)) drop-shadow(0 2px 4px rgba(0, 0, 0, .55));
+}
+.sd-rack { left: 71%; top: 206px; width: 46px; }
+
+/* ---------- deck de salas temáticas ---------- */
+/* flex centrado (não grid de 3 fixas): 1 sala viva fica CENTRADA, não
+   encostada na esquerda com 2 colunas vazias. max-width mantém a sala do
+   mesmo tamanho com 1, 2 ou 3 projetos. */
+.sd-deck { position: absolute; left: 212px; right: 212px; top: 352px; height: 384px; z-index: 10; display: flex; justify-content: center; gap: 24px; }
+.sd-bay { position: relative; flex: 1 1 0; min-width: 0; max-width: 342px; display: flex; flex-direction: column; border-radius: 7px 7px 4px 4px; border: 1px solid color-mix(in srgb, var(--c) 42%, #1c2832); border-top: 2px solid color-mix(in srgb, var(--c) 66%, #243340); box-shadow: inset 0 0 34px color-mix(in srgb, var(--c) 14%, transparent), 0 14px 30px rgba(0, 0, 0, .5); }
+.sd-bay::before, .sd-bay::after { content: ""; position: absolute; top: 6px; bottom: 6px; width: 5px; z-index: 5; background: var(--st-glass); border-left: 1px solid var(--st-glass-edge); border-right: 1px solid var(--st-glass-edge); }
+.sd-bay::before { left: -3px; }
+.sd-bay::after { right: -3px; }
+/* coluna fina de overflow: "+N salas" quando ha mais workspaces que BAY_CAP */
+.sd-bay-more { flex: 0 0 56px; align-self: stretch; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; border-radius: 6px; border: 1px dashed color-mix(in srgb, #4dd0e1 34%, #1c2832); background: rgba(8, 13, 19, .42); color: var(--sd-ink-dim); font-family: var(--sd-pixel); font-size: 15px; }
+.sd-bay-more span { font-size: 7px; letter-spacing: 1px; }
+.sd-ceil { position: absolute; top: -1px; left: 50%; transform: translateX(-50%); width: 74%; height: 150px; z-index: 1; pointer-events: none; background: linear-gradient(180deg, color-mix(in srgb, var(--c) 26%, transparent), transparent 78%); clip-path: polygon(40% 0, 60% 0, 100% 100%, 0 100%); }
+.sd-fixture { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 34%; height: 3px; z-index: 6; background: color-mix(in srgb, var(--c) 70%, #fff); box-shadow: 0 0 10px var(--c); }
+.sd-plate { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); z-index: 7; display: flex; align-items: center; gap: 8px; padding: 5px 12px; border-radius: 5px; white-space: nowrap; background: linear-gradient(180deg, #10171f, #0a1016); border: 1px solid color-mix(in srgb, var(--c) 54%, #26333f); border-bottom: 2px solid var(--c); box-shadow: 0 4px 10px rgba(0, 0, 0, .5); }
+.sd-plate-name { font-family: var(--sd-pixel); font-size: 11px; letter-spacing: 1px; color: var(--st-white); }
+.sd-plate-brand { display: flex; align-items: center; }
+.sd-count { font-family: var(--sd-pixel); font-size: 9px; color: #0a0e13; background: var(--c); padding: 2px 7px; border-radius: 4px; box-shadow: 0 0 8px color-mix(in srgb, var(--c) 60%, transparent); }
+.sd-count.idle { color: var(--c); background: transparent; border: 1px solid color-mix(in srgb, var(--c) 50%, #26333f); box-shadow: none; }
+.sd-wallzone { position: relative; height: 34%; border-radius: 6px 6px 0 0; padding: 12px 12px 0; z-index: 3; display: flex; gap: 9px; align-items: center; background: linear-gradient(180deg, color-mix(in srgb, var(--c) 24%, #0b1119), color-mix(in srgb, var(--c) 8%, #0a0f15)); border-bottom: 2px solid color-mix(in srgb, var(--c) 46%, #1c2832); }
+.sd-wallprop { flex: 0 0 auto; align-self: flex-end; margin-bottom: 6px; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .5)); display: flex; }
+/* min-width:0 = chave do flexbox: sem isso o item flex tem min-width:auto e
+   nao encolhe abaixo do conteudo -> a acao longa estoura a sala e o
+   text-overflow:ellipsis do .sd-modscreen-act nunca dispara. */
+.sd-modscreen { flex: 1; min-width: 0; height: 64px; border-radius: 5px; padding: 7px 9px; display: flex; flex-direction: column; justify-content: center; gap: 5px; background: linear-gradient(180deg, #080d13, #05080d); border: 1px solid color-mix(in srgb, var(--c) 32%, #1a2530); box-shadow: inset 0 0 14px color-mix(in srgb, var(--c) 16%, transparent); }
+.sd-modscreen-ttl { font-family: var(--sd-pixel); font-size: 7px; letter-spacing: 1px; color: var(--sd-ink-dim); }
+.sd-modscreen-act { font-family: var(--sd-mono); font-size: 10px; color: color-mix(in srgb, var(--c) 72%, #dfeaf5); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sd-modscreen-bar { height: 5px; border-radius: 3px; background: #10171f; overflow: hidden; }
+.sd-modscreen-bar i { display: block; height: 100%; background: var(--c); box-shadow: 0 0 8px var(--c); }
+.sd-wallclock { position: absolute; right: 8px; top: -3px; z-index: 6; display: flex; }
+.sd-modfloor { position: relative; flex: 1; min-height: 0; display: flex; flex-wrap: wrap; gap: 2px 6px; justify-content: center; align-items: flex-end; align-content: flex-end; padding: 8px 6px 12px; z-index: 3; overflow: hidden; background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--c) 11%, transparent)), repeating-linear-gradient(to right, color-mix(in srgb, var(--c) 9%, transparent) 0 1px, transparent 1px 38px), repeating-linear-gradient(to bottom, color-mix(in srgb, var(--c) 7%, transparent) 0 1px, transparent 1px 32px); }
+.sd-rug { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); width: 78%; height: 50px; border-radius: 9px; border: 2px solid color-mix(in srgb, var(--c) 38%, transparent); background: color-mix(in srgb, var(--c) 9%, transparent); z-index: 0; }
+.sd-fll { position: absolute; left: 6px; bottom: 8px; z-index: 1; filter: drop-shadow(0 3px 4px rgba(0, 0, 0, .55)); display: flex; }
+.sd-flr { position: absolute; right: 6px; bottom: 8px; z-index: 1; filter: drop-shadow(0 3px 4px rgba(0, 0, 0, .55)); display: flex; }
+
+/* ---------- workstation (agente sentado na mesa turbo) ---------- */
+.sd-ws { position: relative; display: flex; flex-direction: column; align-items: center; width: 104px; z-index: 2; }
+.sd-bubble { font-family: var(--sd-mono); font-size: 9px; color: #cfe; background: #0c141c; border: 1px solid #24323f; padding: 3px 7px; border-radius: 5px; margin-bottom: 4px; max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-shadow: 0 3px 7px rgba(0, 0, 0, .4); }
+.sd-wait { font-family: var(--sd-pixel); font-size: 7.5px; letter-spacing: 1px; color: #0a0e13; background: var(--sd-ready); padding: 3px 7px; border-radius: 5px; margin-bottom: 4px; box-shadow: 0 0 12px var(--sd-ready); animation: sd-blink 1.1s infinite; }
+/* composição comprovada do scene.css: cadeira ATRÁS (z0), mesa em fluxo
+   (z1) define a altura, avatar NA FRENTE (z2) ancorado pela base sentando
+   à mesa. */
+.sd-figs { position: relative; width: 104px; }
+.sd-deskwrap { position: relative; z-index: 1; width: 90px; margin: 0 auto; display: block; }
+.sd-deskwrap svg { display: block; width: 100%; }
+.sd-chair { position: absolute; left: 50%; top: 30%; width: 44%; margin-left: -22%; z-index: 0; }
+.sd-chair svg { display: block; width: 100%; }
+.sd-av { position: absolute; left: 50%; bottom: 14%; width: 48%; margin-left: -24%; z-index: 2; }
+.sd-av svg { display: block; width: 100%; }
+.sd-floorline { position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%); width: 84px; height: 7px; border-radius: 50%; background: rgba(0, 0, 0, .5); filter: blur(2px); z-index: 0; }
+/* minions: subagentes trabalhando pro agente, empoleirados acima da mesa */
+.sd-minions { position: absolute; top: -2px; left: 50%; transform: translateX(-50%); display: flex; gap: 2px; z-index: 4; pointer-events: none; }
+.sd-minion { width: 13px; display: block; }
+.sd-minion svg { display: block; width: 100%; }
+.sd-minion-more { font-family: var(--sd-pixel); font-size: 7px; color: var(--c, #9fb0c0); align-self: center; }
+/* "+N na fila" quando a sala tem mais agentes que cabem */
+.sd-overflow-pill { position: absolute; right: 7px; bottom: 7px; z-index: 6; font-family: var(--sd-pixel); font-size: 7px; letter-spacing: 1px; color: var(--c); background: #0c131a; border: 1px solid color-mix(in srgb, var(--c) 40%, #1c2832); padding: 3px 6px; border-radius: 4px; }
+.sd-badge { display: flex; border-radius: 5px; overflow: hidden; box-shadow: 0 2px 6px rgba(0, 0, 0, .5); font-family: var(--sd-pixel); margin-top: 5px; }
+.sd-badge-nm { font-size: 8px; letter-spacing: .5px; background: #eef4fb; color: #0c1118; padding: 3px 7px; }
+.sd-badge-rl { font-size: 7.5px; background: var(--c, #2a3742); color: #0a0e13; padding: 3px 7px; }
+.sd-badge-rl.idle { background: #2a3742; color: #9fb0c0; }
+.sd-ws.waiting .sd-figs::after { content: ""; position: absolute; inset: -4px -10px 18px; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--sd-ready) 36%, transparent), transparent); animation: sd-blink 1.6s infinite; z-index: 0; }
+.sd-beacon { position: absolute; top: -16px; left: 50%; transform: translateX(-50%); font-family: var(--sd-pixel); font-size: 11px; color: var(--sd-ready); text-shadow: 0 0 8px var(--sd-ready); animation: sd-blink 1.1s infinite; z-index: 4; }
+
+/* ---------- side bays: HANGAR e CAFÉ ---------- */
+.sd-sidebay { position: absolute; top: 352px; height: 384px; width: 158px; z-index: 9; }
+.sd-sidebay.left { left: 30px; }
+.sd-sidebay.right { right: 30px; }
+.sd-hangar-inner { position: relative; height: 100%; display: flex; flex-direction: column; border-radius: 7px 7px 4px 4px; border: 1px solid #1d3a47; border-top: 2px solid #2b5566; box-shadow: inset 0 0 30px #4dd0e114, 0 14px 30px rgba(0, 0, 0, .5); overflow: hidden; }
+.sd-breach { position: relative; height: 42%; border-radius: 6px 6px 0 0; overflow: hidden; background: radial-gradient(120% 90% at 35% 8%, #10254a, #04070b); border-bottom: 2px solid #1d3a47; }
+.sd-bstar { position: absolute; border-radius: 50%; background: #cfe6ff; }
+.sd-hangar-floor { position: relative; flex: 1; background: linear-gradient(180deg, transparent, #4dd0e110); }
+.sd-pad { position: absolute; left: 50%; transform: translateX(-50%); bottom: 44px; width: 92px; height: 16px; border-radius: 4px; background: linear-gradient(#364556, #232c36); box-shadow: 0 0 16px #4dd0e133, inset 0 1px 0 #46586c; }
+.sd-pad-stripe { position: absolute; left: 50%; transform: translateX(-50%); bottom: 42px; width: 74px; height: 2px; background: repeating-linear-gradient(90deg, #4dd0e1 0 6px, transparent 6px 12px); opacity: .6; }
+.sd-ship { position: absolute; left: 50%; bottom: 50px; transform: translateX(-50%); width: 60px; z-index: 2; }
+.sd-ship svg { display: block; width: 100%; }
+.sd-ship-shadow { position: absolute; left: 50%; bottom: 40px; transform: translateX(-50%); width: 58px; height: 8px; border-radius: 50%; background: rgba(0, 0, 0, .5); filter: blur(2px); }
+/* nave parada respira (bob); subagente novo => DECOLA pela brecha (sobe e
+   some), depois reseta pra nave parada. */
+@keyframes sd-bob { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-4px); } }
+@keyframes sd-launch {
+  0% { transform: translateX(-50%) translateY(0); opacity: 1; }
+  72% { opacity: 1; }
+  100% { transform: translateX(-50%) translateY(-250px); opacity: 0; }
+}
+.sd-ship.idle { animation: sd-bob 3.2s ease-in-out infinite; }
+.sd-ship.launching { animation: sd-launch var(--sd-fly, 1300ms) cubic-bezier(.5, 0, .9, .4) forwards; }
+.sd-ship.launching ~ .sd-ship-shadow { opacity: 0; transition: opacity .3s; }
+/* a janela mostra o UNIVERSO REAL do vault (grafo embutido, vivo). */
+.sd-window-graph { position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: .92; }
+.sd-window-graph > * { width: 100%; height: 100%; }
+@media (prefers-reduced-motion: reduce) {
+  .sd-ship.idle, .sd-ship.launching { animation: none !important; }
+}
+.sd-crate { position: absolute; left: 14px; bottom: 14px; display: flex; }
+.sd-cafe-inner { position: relative; height: 100%; display: flex; flex-direction: column; border-radius: 7px 7px 4px 4px; border: 1px solid #5a4420; border-top: 2px solid #8a6a2e; box-shadow: inset 0 0 30px #ffb45414, 0 14px 30px rgba(0, 0, 0, .5); background: linear-gradient(180deg, #19140b22, transparent); overflow: hidden; }
+.sd-cafe-wall { position: relative; height: 38%; border-radius: 6px 6px 0 0; background: linear-gradient(180deg, #ffb4541f, #0a0f1510); border-bottom: 2px solid #5a4420; padding: 13px; }
+.sd-coffee-bar { height: 56px; }
+.sd-cafe-floor { position: relative; flex: 1; min-height: 0; display: flex; flex-wrap: wrap; align-content: flex-end; justify-content: center; gap: 2px 6px; padding: 6px 6px 16px; overflow: hidden; background: linear-gradient(180deg, transparent, #ffb45410); }
+.sd-sofa { position: absolute; left: 50%; bottom: 6px; transform: translateX(-50%); width: 88%; z-index: 0; opacity: .9; }
+.sd-sofa svg { display: block; width: 100%; }
+.sd-cafe-agent { position: relative; width: 34px; z-index: 2; }
+.sd-cafe-agent svg { display: block; width: 100%; }
+.sd-bunting { position: absolute; left: 8px; right: 8px; top: 4px; height: 12px; display: flex; justify-content: space-around; z-index: 5; }
+.sd-bunting i { width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 9px solid; }
+.sd-baylabel { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); z-index: 7; font-family: var(--sd-pixel); font-size: 8px; letter-spacing: 1px; padding: 4px 10px; border-radius: 5px; background: linear-gradient(180deg, #10171f, #0a1016); }
+.sd-baylabel.h { color: #7fe3f0; border: 1px solid #1d4756; border-bottom: 2px solid #4dd0e1; }
+.sd-baylabel.c { color: #ffce8a; border: 1px solid #5a4420; border-bottom: 2px solid #ffb454; }
+
+/* ---------- esteira (cargo) ---------- */
+.sd-cargo { position: absolute; left: 212px; right: 212px; bottom: 16px; height: 38px; z-index: 20; display: flex; align-items: center; gap: 10px; padding: 0 12px; border-radius: 6px; background: linear-gradient(180deg, #0c131a, #080d12); border: 1px solid #1d2833; }
+.sd-cargo-lab { font-family: var(--sd-pixel); font-size: 8px; letter-spacing: 1px; color: var(--sd-ink-dim); white-space: nowrap; }
+.sd-belt { position: relative; flex: 1; height: 14px; border-radius: 3px; background: repeating-linear-gradient(90deg, #172029 0 10px, #111922 10px 20px); }
+.sd-box { position: absolute; top: -7px; width: 24px; height: 24px; border-radius: 3px; border: 1px solid #0a0e13; display: flex; align-items: center; justify-content: center; font-family: var(--sd-pixel); font-size: 9px; color: #0a0e13; transition: left .6s ease; }
+
+/* ---------- atmosfera ---------- */
+.sd-vignette { position: absolute; inset: 0; z-index: 50; pointer-events: none; background: radial-gradient(125% 125% at 50% 44%, transparent 58%, rgba(0, 0, 0, .52)); }
+.sd-scan { position: absolute; inset: 0; z-index: 51; pointer-events: none; opacity: .35; background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0) 0 2px, rgba(0, 0, 0, .10) 2px 3px); }
+.sd-empty { position: absolute; inset: 0; z-index: 52; display: flex; align-items: center; justify-content: center; font-family: var(--sd-mono); font-size: 13px; color: var(--sd-ink-dim); }
+
+/* reduced-motion: sem piscar/animação (snap). */
+@media (prefers-reduced-motion: reduce) {
+  .sd-blink, .sd-live-led, .sd-chip.wait .sd-chip-dot, .sd-warstat.pend,
+  .sd-wait, .sd-ws.waiting .sd-figs::after, .sd-beacon { animation: none !important; }
+  .sd-box { transition: none !important; }
+}
+
+/* ================================================================
+   VARIANTES DE DESIGN DA SALA (flag localStorage 'torre.salaVariant').
+   Ausente => skin atual intocado (nenhuma regra abaixo casa sem as
+   classes .sd-bay--a / .sd-bay--b, que so aparecem com a flag). Tudo
+   estatico (sem animacao). A cor do projeto continua em var(--c).
+   ================================================================ */
+
+/* ---------- SALA-A: modulos fechados ----------
+   Cada sala vira um modulo de estacao acabado: casco solido (paleta hull),
+   cor do projeto SO no trim superior e numa faixa de piso. Linha de teto,
+   porta simples e nameplate metalico. Mesas/agentes/baloes intocados. */
+.sd-bay.sd-bay--a {
+  background: linear-gradient(180deg, var(--st-hull-mid), var(--st-hull-dark));
+  border: 1px solid var(--st-hull-light);
+  border-top: 3px solid var(--c);
+  box-shadow: inset 0 0 0 1px var(--st-outline), 0 14px 30px rgba(0, 0, 0, .55);
+}
+/* laterais: casco solido no lugar do vidro neon */
+.sd-bay.sd-bay--a::before, .sd-bay.sd-bay--a::after {
+  background: linear-gradient(180deg, var(--st-hull-light), var(--st-hull-mid));
+  border-left: 1px solid var(--st-outline);
+  border-right: 1px solid var(--st-rivet);
+}
+/* teto: cone de luz neutro (sem glow forte do projeto) */
+.sd-bay.sd-bay--a .sd-ceil {
+  background: linear-gradient(180deg, rgba(107, 124, 141, .18), transparent 78%);
+}
+/* linha de teto metalica (fixture vira trilho de casco) */
+.sd-bay.sd-bay--a .sd-fixture {
+  background: var(--st-rivet);
+  box-shadow: 0 1px 0 var(--st-outline);
+}
+/* nameplate metalico: casco escovado + acento do projeto so na base */
+.sd-bay.sd-bay--a .sd-plate {
+  background: linear-gradient(180deg, var(--st-hull-light), var(--st-hull-mid));
+  border: 1px solid var(--st-outline);
+  border-top: 1px solid var(--st-rivet);
+  border-bottom: 2px solid var(--c);
+}
+/* parede solida de casco (sem tint neon) */
+.sd-bay.sd-bay--a .sd-wallzone {
+  background: linear-gradient(180deg, var(--st-hull-mid), var(--st-hull-dark));
+  border-bottom: 2px solid var(--st-outline);
+}
+/* telao de acao vira painel montado no casco (borda neutra) */
+.sd-bay.sd-bay--a .sd-modscreen {
+  border-color: var(--st-hull-light);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, .4);
+}
+/* piso interno levemente mais claro que o piso geral + faixa do projeto */
+.sd-bay.sd-bay--a .sd-modfloor {
+  background:
+    repeating-linear-gradient(to right, rgba(107, 124, 141, .07) 0 1px, transparent 1px 38px),
+    repeating-linear-gradient(to bottom, rgba(107, 124, 141, .05) 0 1px, transparent 1px 32px),
+    linear-gradient(180deg, #20262f, #181d26);
+}
+/* faixa de piso na cor do projeto (soleira, logo abaixo da parede) */
+.sd-bay.sd-bay--a .sd-modfloor::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 4px;
+  background: var(--c);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--c) 55%, transparent);
+  z-index: 0;
+}
+/* tapete vira contorno de casco (cor do projeto fica so no trim + faixa) */
+.sd-bay.sd-bay--a .sd-rug {
+  border-color: var(--st-hull-light);
+  background: rgba(255, 255, 255, .015);
+}
+/* porta ocupa o canto esquerdo do piso; some o prop de chao da esquerda */
+.sd-bay.sd-bay--a .sd-fll { display: none; }
+/* porta simples de casco (painel deslizante + selo do projeto na soleira).
+   Filha de .sd-modfloor => z-index 1: atras dos agentes, na frente do piso. */
+.sd-door {
+  position: absolute;
+  left: 5px;
+  bottom: 6px;
+  width: 30px;
+  height: 58px;
+  z-index: 1;
+  border-radius: 3px 3px 0 0;
+  background: linear-gradient(180deg, var(--st-hull-light), var(--st-hull-mid));
+  border: 1px solid var(--st-outline);
+  border-top: 2px solid var(--st-rivet);
+}
+.sd-door::before {
+  content: "";
+  position: absolute;
+  left: 50%; top: 5px; bottom: 4px;
+  width: 1px;
+  background: var(--st-outline);
+}
+.sd-door::after {
+  content: "";
+  position: absolute;
+  left: 4px; right: 4px; bottom: 2px;
+  height: 2px;
+  background: var(--c);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--c) 55%, transparent);
+}
+
+/* ---------- SALA-B: zonas abertas ----------
+   Sem paredes wireframe: cada sala vira uma ZONA DE PISO (deck-plate num
+   tom levemente elevado) com borda fina iluminada na cor do projeto e um
+   label grande e dim no piso, atras das mesas. Mesas/agentes intocados. */
+.sd-bay.sd-bay--b {
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--c) 45%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--c) 55%, transparent);
+  border-radius: 8px;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--c) 12%, transparent),
+    0 0 18px color-mix(in srgb, var(--c) 20%, transparent);
+}
+/* remove tudo que faz "caixa": vidro lateral, teto, fixture, parede, tapete */
+.sd-bay.sd-bay--b::before, .sd-bay.sd-bay--b::after,
+.sd-bay.sd-bay--b .sd-ceil,
+.sd-bay.sd-bay--b .sd-fixture,
+.sd-bay.sd-bay--b .sd-wallzone,
+.sd-bay.sd-bay--b .sd-rug { display: none; }
+/* plate vira badge de contagem flutuante no canto (nome vai pro piso) */
+.sd-bay.sd-bay--b .sd-plate {
+  top: 7px; right: 8px; left: auto;
+  transform: none;
+  padding: 3px 8px;
+  background: rgba(9, 14, 20, .62);
+  border: 1px solid color-mix(in srgb, var(--c) 40%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--c) 40%, transparent);
+  box-shadow: none;
+}
+.sd-bay.sd-bay--b .sd-plate-name, .sd-bay.sd-bay--b .sd-plate-brand { display: none; }
+/* deck-plate: tom levemente elevado + grid neutro fino (sem neon) */
+.sd-bay.sd-bay--b .sd-modfloor {
+  border-radius: 7px;
+  background:
+    repeating-linear-gradient(to right, rgba(107, 124, 141, .06) 0 1px, transparent 1px 40px),
+    repeating-linear-gradient(to bottom, rgba(107, 124, 141, .05) 0 1px, transparent 1px 34px),
+    linear-gradient(180deg, #1b212b, #141a22);
+}
+/* label grande do piso: pintura de hangar, dim, atras das mesas (z-index 0).
+   Texto grande => fonte pixel ok (o embolamento so afeta chip pequeno). */
+.sd-zone-label {
+  position: absolute;
+  left: 0; right: 0; bottom: 16px;
+  z-index: 0;
+  pointer-events: none;
+  text-align: center;
+  text-transform: lowercase;
+  font-family: var(--sd-pixel);
+  font-size: 30px;
+  letter-spacing: 2px;
+  line-height: 1;
+  color: color-mix(in srgb, var(--c) 34%, #566372);
+  opacity: .42;
+}

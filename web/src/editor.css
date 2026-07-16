@@ -1,0 +1,183 @@
+/* ============================================================
+   FAROL - editor de nota in-place (A3, F2)
+   Textarea mono com line-height generoso, mesma largura do artigo.
+   Animacao SO transform/opacity. Comentarios 100% ASCII.
+   ============================================================ */
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 860px;
+  height: 100%;
+  min-height: 0;
+  margin: 0 auto;
+  padding: 26px 36px 36px;
+}
+
+.editor-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.editor-badge {
+  padding: 2px 10px;
+  border: 1px solid color-mix(in srgb, var(--amber) 45%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--amber) 7%, transparent);
+  color: var(--amber);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.editor-path {
+  flex: 1;
+  min-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+}
+
+.editor-count,
+.editor-hint {
+  flex-shrink: 0;
+  font-size: 11px;
+}
+
+.editor-btn {
+  flex-shrink: 0;
+  padding: 5px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  transition: transform 120ms ease, opacity 120ms ease;
+}
+
+.editor-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.editor-btn:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.editor-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.editor-btn.save {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+}
+
+.editor-btn.danger {
+  color: var(--red);
+  border-color: color-mix(in srgb, var(--red) 50%, transparent);
+}
+
+.editor-conflict {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  flex-shrink: 0;
+  padding: 10px 14px;
+  border: 1px solid color-mix(in srgb, var(--amber) 50%, transparent);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--amber) 8%, transparent);
+}
+
+.editor-conflict-msg {
+  flex: 1;
+  min-width: 200px;
+  color: var(--amber);
+  font-size: 13px;
+}
+
+.editor-error {
+  flex-shrink: 0;
+  padding: 8px 12px;
+  border: 1px solid color-mix(in srgb, var(--red) 40%, transparent);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--red) 6%, transparent);
+  color: var(--red);
+  font-size: 12px;
+}
+
+.editor-warn {
+  flex-shrink: 0;
+  padding: 8px 12px;
+  border: 1px solid color-mix(in srgb, var(--amber) 35%, transparent);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--amber) 5%, transparent);
+  color: var(--amber);
+  font-size: 11px;
+}
+
+.editor-area {
+  flex: 1;
+  width: 100%;
+  min-height: 320px;
+  resize: none;
+  padding: 18px 20px;
+  background: var(--bg-deep);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 13.5px;
+  line-height: 1.8;
+  tab-size: 2;
+}
+
+.editor-area:focus-visible {
+  outline: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
+  outline-offset: 1px;
+}
+
+/* ------------------------------------------------------------
+   cabecalho da nota: botao editar ao lado do titulo
+   ------------------------------------------------------------ */
+.note-head-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.note-head-row .note-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.note-edit-btn {
+  flex-shrink: 0;
+  margin-top: 8px;
+  padding: 4px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--dim);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: transform 120ms ease, opacity 120ms ease;
+}
+
+.note-edit-btn:hover {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+  transform: translateY(-1px);
+}
+
+.note-edit-btn:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}

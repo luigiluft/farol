@@ -1,0 +1,39 @@
+{
+  "name": "farol",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "description": "FAROL - mission control for your Claude Code fleet: watch agents work in real time, see what they see, know what they cost. Local-first, zero instrumentation.",
+  "license": "MIT",
+  "author": "Luigi Luft (https://github.com/luigiluft)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/luigiluft/farol.git"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "concurrently \"node server/index.mjs\" \"npm --prefix web run dev\"",
+    "build": "node scripts/build-atomic.mjs",
+    "start": "node server/index.mjs",
+    "setup": "node scripts/setup.mjs",
+    "demo": "node scripts/demo/run.mjs",
+    "postinstall": "npm --prefix web install --no-audit --no-fund"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.104.1",
+    "chokidar": "^3.6.0",
+    "dotenv": "^17.4.2",
+    "express": "^4.21.2",
+    "gray-matter": "^4.0.3",
+    "ws": "^8.18.0"
+  },
+  "optionalDependencies": {
+    "node-pty": "^1.0.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "playwright-core": "^1.60.0"
+  }
+}

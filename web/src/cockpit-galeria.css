@@ -1,0 +1,61 @@
+/* GALERIA - histórico global de mídia. Dia (serif) → sessão (espinha de cor)
+   → grid de cards ricos. Theme-safe: tokens só. */
+.ck-galeria { display: flex; flex-direction: column; min-height: 0; flex: 1; }
+
+.ckg-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 10px 14px; border-bottom: 1px solid var(--border); }
+.ckg-chip {
+  border: 1px solid var(--border); border-radius: 99px; padding: 4px 12px; cursor: pointer;
+  color: var(--dim); background: none; font-family: var(--font-mono); font-size: 11px;
+}
+.ckg-chip.on { border-color: var(--accent); color: var(--accent); }
+.ckg-chip:not(.on):hover { color: var(--text-strong); background: var(--hover); }
+.ckg-chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.ckg-n { opacity: 0.6; margin-left: 5px; }
+.ckg-sync { margin-left: auto; color: var(--dim); font-size: 10px; }
+
+.ckg-scroll { overflow-y: auto; flex: 1; min-height: 0; padding: 6px 14px 40px; }
+.ckg-day > h2 {
+  font-family: var(--font-display); font-size: 17px; font-weight: 600; color: var(--text-strong);
+  padding: 12px 0 4px; border-bottom: 1px solid var(--border); margin-bottom: 12px;
+}
+.ckg-day > h2 small { font-family: var(--font-mono); color: var(--dim); font-size: 10px; margin-left: 10px; letter-spacing: 1px; }
+
+.ckg-sess { border-left: 3px solid var(--sc, var(--accent)); padding-left: 14px; margin-bottom: 20px; }
+.ckg-shead { display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; }
+.ckg-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--sc); align-self: center; }
+.ckg-nm { color: var(--text-strong); font-size: 12.5px; font-weight: 700; font-family: var(--font-mono); flex: 0 0 auto; }
+.ckg-mission {
+  color: var(--dim); font-size: 11.5px; font-style: italic; font-family: var(--font-display);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 0 1 auto; min-width: 0;
+}
+.ckg-ct { color: var(--dim); font-size: 10px; font-family: var(--font-mono); flex: 0 0 auto; margin-left: auto; }
+
+.ckg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
+.ckg-card {
+  background: var(--panel); border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+  cursor: pointer; transition: border-color 0.15s, transform 0.15s; padding: 0; text-align: left;
+  font-family: var(--font-mono); color: var(--text);
+}
+.ckg-card:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+.ckg-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.ckg-th { display: block; aspect-ratio: 16/9; background: var(--bg-deep); position: relative; overflow: hidden; }
+.ckg-th img, .ckg-th video { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* Badge = PROVENIENCIA (de onde veio), nao formato. Chip de cor solida por
+   categoria (paleta da casa) + tinta escura fixa: legivel nos 2 temas sem
+   depender do fundo. */
+.ckg-badge {
+  position: absolute; top: 7px; left: 7px; font-size: 9px; letter-spacing: 1px; font-weight: 700;
+  background: color-mix(in srgb, var(--bg-deep) 78%, transparent); color: var(--text-strong);
+  padding: 2px 7px; border-radius: 4px; text-transform: uppercase;
+}
+.ckg-badge.prov-gen { background: #ffb454; color: #241601; }
+.ckg-badge.prov-seen { background: #82aaff; color: #06122e; }
+.ckg-badge.prov-read { background: #4dd0e1; color: #042027; }
+.ckg-badge.prov-sent { background: #c792ea; color: #1e0a2b; }
+.ckg-play {
+  position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none;
+  color: var(--text-strong); font-size: 15px;
+}
+.ckg-ft { display: block; padding: 7px 10px; }
+.ckg-l1 { display: block; color: var(--text-strong); font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ckg-l2 { display: block; color: var(--dim); font-size: 10px; margin-top: 2px; }

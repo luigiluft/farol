@@ -1,0 +1,26 @@
+/* FAROL - Lightbox compartilhado (TRILHA + OLHO). Theme-safe SO no sentido
+   de que fica por cima de tudo; backdrop escuro e intencional nos dois temas
+   (visualizador de midia, nao painel de conteudo). */
+.lb-backdrop { position: fixed; inset: 0; z-index: 1000; background: rgba(8, 10, 14, .82);
+  display: flex; align-items: center; justify-content: center; }
+.lb-body { display: flex; flex-direction: column; gap: 8px; width: min(92vw, 1500px);
+  height: min(92vh, 980px); }
+.lb-head { display: flex; gap: 10px; align-items: center; color: #e8ecf3; font-size: 12.5px; }
+.lb-caption { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; opacity: .85; }
+.lb-zoom { margin-left: auto; font-family: var(--font-mono, monospace); opacity: .6; }
+.lb-btn { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18);
+  border-radius: 6px; color: inherit; cursor: pointer; padding: 3px 10px; }
+.lb-btn:focus-visible { outline: 2px solid var(--ready, currentColor); outline-offset: 2px; }
+.lb-stage { flex: 1; overflow: hidden; display: flex; align-items: center; justify-content: center;
+  cursor: grab; border-radius: 10px; background: rgba(255,255,255,.03); }
+.lb-stage:active { cursor: grabbing; }
+.lb-stage img { max-width: 100%; max-height: 100%; user-select: none; transition: transform .05s linear; }
+.lb-strip { display: flex; gap: 6px; overflow-x: auto; padding: 2px; }
+.lb-strip img { height: 56px; border-radius: 6px; opacity: .55; cursor: pointer;
+  border: 2px solid transparent; }
+.lb-strip img.on { opacity: 1; border-color: #e8ecf3; }
+
+@media (max-width: 600px) {
+  .lb-body { width: 98vw; height: 94vh; }
+}
+.lb-dead { color: #e8ecf3; opacity: .6; font-size: 13px; padding: 24px; }

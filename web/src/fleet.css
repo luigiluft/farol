@@ -1,0 +1,740 @@
+/* FAROL - fleet.css (S4, F5.4/F5.7/F5.10 -> F7): chips de nave + cartao
+   de missao do FleetOverlay + mini-pods da estacao e saida de capsula do
+   HangarBar (rito de encerramento).
+   F7: 100% tokens/color-mix (zero rgba/hex hardcoded) -- o tema claro
+   funciona sozinho; pods metalicos ganham versao light via vars --pod-*;
+   chip vira [LED][CALLSIGN][frase amigavel]; cartao v2 com header em 2
+   linhas (callsign grande + code dim) e secao I/O com barras de tokens
+   (scaleX, transform only).
+   Estetica pixel/CRT coerente com o app: bordas 1px, sem blur,
+   border-radius max 3px, fontes mono.
+   Regras duras: animacao SO transform/opacity (entrada do cartao =
+   scale(0.96)->1 + fade 120ms; chips = transicao de opacity 160ms;
+   saida de capsula = fade + translateY 8px 160ms; barra I/O = scaleX
+   300ms); zero backdrop-filter; posicao de chip/cartao e 100% via
+   transform imperativo escrito pelo rAF do overlay (left/top ficam em 0). */
+
+/* ------------------------------------------------------------
+   camada raiz: cobre o universo; so chips/cartao recebem ponteiro
+   ------------------------------------------------------------ */
+.fleet-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  pointer-events: none;
+  font-family: var(--font-mono);
+}
+
+/* ------------------------------------------------------------
+   chip de nave: [dot estado][CALLSIGN][frase amigavel]
+   nasce invisivel (opacity 0); o rAF liga opacity/pointer-events
+   ------------------------------------------------------------ */
+.fleet-chip {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 7px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  /* quase opaco: o anel de orbita das estacoes nao pode vazar
+     atraves do chip e ler como strikethrough */
+  background: color-mix(in srgb, var(--bg-deep) 97%, transparent);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1.5;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 160ms ease;
+  will-change: transform, opacity;
+}
+
+.fleet-chip.sel {
+  background: color-mix(in srgb, var(--panel-2) 97%, transparent);
+}
+
+.fleet-chip:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.fc-dot {
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  border-radius: 1px;
+  background: var(--dim);
+}
+
+.fc-dot.fb-st-voo { background: var(--accent); }
+.fc-dot.fb-st-taxi { background: var(--amber); }
+.fc-dot.fb-st-carga { background: var(--cyan); }
+.fc-dot.fb-st-dorm { background: var(--dim); opacity: 0.6; }
+.fc-dot.fb-st-feito { background: var(--accent); }
+.fc-dot.fb-st-espera {
+  background: var(--ready);
+  box-shadow: 0 0 5px var(--ready);
+  animation: fc-wait-pulse 1.3s ease-in-out infinite;
+}
+
+/* F8: pulso do "esperando voce" no dot do chip (so opacity = compositor) */
+@keyframes fc-wait-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fc-dot.fb-st-espera { animation: none; }
+}
+
+/* callsign: nome primario da nave no chip */
+.fc-call {
+  flex: 0 0 auto;
+  color: var(--text-strong);
+  letter-spacing: 0.06em;
+  /* v5: identidade pixel (Silkscreen) padronizada com os badges da Sala */
+  font-family: 'Silkscreen', 'JetBrains Mono', monospace;
+  font-size: 9px;
+}
+
+/* v5: chip que ESPERA VOCÊ pop em rosa (borda + glow), igual ao destaque
+   do "esperando você" da Sala — não só o dot. */
+.fleet-chip.awaiting {
+  border-color: var(--ready) !important;
+  box-shadow: 0 0 10px color-mix(in srgb, var(--ready) 45%, transparent);
+}
+
+.fc-sep {
+  flex: 0 0 auto;
+  color: var(--dim);
+}
+
+/* ticker max ~24ch com ellipsis (frase amigavel da acao) */
+.fc-ticker {
+  max-width: 24ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--dim);
+}
+
+/* ------------------------------------------------------------
+   cartao de missao: anchor move via transform (rAF); o cartao
+   interno anima a entrada (scale+fade) sem brigar com o anchor
+   ------------------------------------------------------------ */
+.fleet-card-anchor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 300px;
+  pointer-events: auto;
+  will-change: transform;
+}
+
+.fleet-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 9px 10px 8px;
+  border: 1px solid var(--fleet-accent, var(--accent));
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--panel) 96%, transparent);
+  box-shadow: 0 10px 26px var(--shadow);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text);
+  transform-origin: 0 14px;
+  animation: fleet-card-in 120ms ease-out;
+}
+
+.fleet-card-anchor.flip .fleet-card {
+  transform-origin: 100% 14px;
+}
+
+@keyframes fleet-card-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* leader line ate a nave (pseudo-elemento; .flip troca de lado) */
+.fleet-card::before {
+  content: '';
+  position: absolute;
+  left: -15px;
+  top: 13px;
+  width: 14px;
+  height: 1px;
+  background: var(--fleet-accent, var(--accent));
+}
+
+.fleet-card-anchor.flip .fleet-card::before {
+  left: auto;
+  right: -15px;
+}
+
+/* ------------------------------------------------------------
+   header v2 (F7): linha 1 = CALLSIGN grande + code dim + tempo;
+   linha 2 = projeto na cor + badge estado + modelo
+   ------------------------------------------------------------ */
+.fm-head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.fm-head-main,
+.fm-head-sub {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+}
+
+.fm-call {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  /* v5: callsign em Silkscreen (padrão da Sala) */
+  font-family: 'Silkscreen', 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--fleet-accent, var(--accent));
+}
+
+.fm-code {
+  flex: 0 0 auto;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: var(--dim);
+}
+
+.fm-project {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 10px;
+  /* project color as TEXT: JSX sets --proj-color inline (F7 fix) */
+  color: var(--proj-color, var(--text));
+}
+
+/* light theme: the raw project palette is calibrated for dark skies and
+   fails contrast as text on white panels (lime 'home' ~1.6:1) -- mix the
+   hue toward strong ink instead of swapping the color */
+[data-theme='light'] .fm-project {
+  color: color-mix(in srgb, var(--proj-color, var(--text)) 55%, var(--text-strong));
+}
+
+/* same treatment for the callsign painted with the project accent */
+[data-theme='light'] .fm-call {
+  color: color-mix(in srgb, var(--fleet-accent, var(--accent)) 55%, var(--text-strong));
+}
+
+.fm-badge {
+  flex: 0 0 auto;
+  padding: 0 5px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  font-size: 8px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.fm-badge.fb-st-voo {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+.fm-badge.fb-st-taxi {
+  color: var(--amber);
+  border-color: color-mix(in srgb, var(--amber) 40%, transparent);
+}
+
+.fm-badge.fb-st-carga {
+  color: var(--cyan);
+  border-color: color-mix(in srgb, var(--cyan) 40%, transparent);
+}
+
+.fm-badge.fb-st-dorm { color: var(--dim); }
+
+.fm-badge.fb-st-feito {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+.fm-badge.fb-st-espera {
+  color: var(--ready);
+  border-color: color-mix(in srgb, var(--ready) 50%, transparent);
+  background: color-mix(in srgb, var(--ready) 12%, transparent);
+  animation: fc-wait-pulse 1.3s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .fm-badge.fb-st-espera { animation: none; }
+}
+
+.fm-model {
+  flex: 0 0 auto;
+  font-size: 9px;
+  color: var(--dim);
+}
+
+.fm-time {
+  flex: 0 0 auto;
+  font-size: 10px;
+  color: var(--text);
+}
+
+/* ------------------------------------------------------------
+   secoes: MISSAO / AGORA / I-O / LOG / DRONES
+   ------------------------------------------------------------ */
+.fm-sec {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.fm-sec-title {
+  margin: 0;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+/* missao: promptPreview em 2 linhas com reticencias; overflow-wrap
+   forca token sem espaco (path/url longo) a quebrar DENTRO da caixa. */
+.fm-prompt {
+  margin: 0;
+  font-size: 10px;
+  line-height: 1.5;
+  color: var(--text);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.fm-now {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+}
+
+.fm-now-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* icone-tool SVG mono compartilhado com o dossie (ToolIcon) */
+.fm-tool-icon {
+  flex: 0 0 auto;
+  width: 12px;
+  height: 12px;
+  color: var(--cyan);
+}
+
+.fm-ago {
+  flex: 0 0 auto;
+  font-size: 9px;
+  color: var(--dim);
+}
+
+/* ------------------------------------------------------------
+   I/O (F7): entrada/saida de tokens com barra em escala log.
+   A barra anima SO transform (scaleX), origem na esquerda.
+   ------------------------------------------------------------ */
+.fm-io {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fm-io-row {
+  display: grid;
+  grid-template-columns: 58px 56px 1fr;
+  align-items: center;
+  gap: 6px;
+  font-size: 9px;
+}
+
+.fm-io-label {
+  color: var(--dim);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.fm-io-num {
+  color: var(--text);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.fm-io-bar {
+  display: block;
+  height: 3px;
+  border-radius: 1px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--border) 60%, transparent);
+}
+
+.fm-io-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  transition: transform 300ms ease;
+}
+
+.fm-io-fill.in { background: var(--accent); }
+.fm-io-fill.out { background: var(--cyan); }
+
+/* log: ate 10 linhas, mais novo primeiro; linha com vaultPath e botao.
+   Corte em linha INTEIRA: cada linha tem 20px exatos (border-box =
+   15px de line-height + 4px de padding + 1px de borda), entao
+   max-height 120px = 6 linhas cravadas, nada clipado ao meio. */
+.fm-log {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 120px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* item nao encolhe: a conta de 20px/linha vale com overflow ativo */
+.fm-log li {
+  flex: 0 0 auto;
+}
+
+.fm-log-row {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  height: 20px;
+  padding: 2px 0;
+  border-bottom: 1px dashed color-mix(in srgb, var(--border) 70%, transparent);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 15px;
+  color: var(--text);
+  text-align: left;
+}
+
+.fm-log li:last-child .fm-log-row {
+  border-bottom: 0;
+}
+
+.fm-log-row.is-link {
+  cursor: pointer;
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.fm-log-row.is-link:hover {
+  transform: translateX(1px);
+}
+
+.fm-log-row.is-link .fm-log-text {
+  color: var(--cyan);
+}
+
+.fm-log-row.is-link:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: -1px;
+}
+
+.fm-log-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* drones: ate 12 (scroll) + contador; LED quadrado pixel; droneCallsign
+   forte + tipo do agente dim + badge da tool + frase amigavel */
+.fm-drones {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 168px;
+  overflow-y: auto;
+}
+
+.fm-drone {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+}
+
+.fm-led {
+  flex: 0 0 auto;
+  width: 5px;
+  height: 5px;
+  border-radius: 1px;
+  background: var(--dim);
+  opacity: 0.4;
+}
+
+.fm-led.on {
+  background: var(--accent);
+  opacity: 1;
+}
+
+.fm-drone-label {
+  flex: 0 0 auto;
+  color: var(--text-strong);
+}
+
+.fm-drone-type {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 9px;
+  color: var(--dim);
+}
+
+.fm-drone-tool {
+  flex: 0 0 auto;
+  font: 700 8px var(--font-mono);
+  letter-spacing: 0.3px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  color: var(--cyan);
+  background: color-mix(in srgb, var(--cyan) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--cyan) 25%, transparent);
+}
+.fm-drone-tool.st-search {
+  color: var(--violet);
+  background: color-mix(in srgb, var(--violet) 12%, transparent);
+  border-color: color-mix(in srgb, var(--violet) 22%, transparent);
+}
+.fm-drone-tool.st-write {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+.fm-drone-tool.st-shell {
+  color: var(--amber);
+  background: color-mix(in srgb, var(--amber) 12%, transparent);
+  border-color: color-mix(in srgb, var(--amber) 22%, transparent);
+}
+.fm-drone-tool.st-idle {
+  color: var(--dim);
+  background: none;
+  border-color: var(--border);
+}
+
+.fm-drone-action {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 9px;
+  color: var(--dim);
+}
+/* subagent ativo: a frase da acao fica em destaque (nao dim) */
+.fm-drone.on .fm-drone-action {
+  color: var(--text);
+}
+
+.fm-sec-count {
+  font: 600 9px var(--font-mono);
+  color: var(--accent);
+  margin-left: 6px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.fm-drones-more {
+  padding-top: 2px;
+  font-size: 9px;
+  color: var(--dim);
+}
+
+/* ------------------------------------------------------------
+   footer: transcript + [seguir][dossie][x] (tokens viraram I/O)
+   ------------------------------------------------------------ */
+.fm-foot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
+  font-size: 9px;
+  color: var(--dim);
+}
+
+.fm-foot-spacer {
+  flex: 1 1 auto;
+}
+
+.fm-btn {
+  flex: 0 0 auto;
+  padding: 1px 7px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  color: var(--dim);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.fm-btn:hover {
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+.fm-btn:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.fm-btn-x:hover {
+  color: var(--red);
+}
+
+/* ------------------------------------------------------------
+   mini-pod da estacao (F5.10/F7): a capsula do hangar e um pod
+   com casco metalico em 2 chapas (gradiente CSS ESTATICO de
+   hard-stop -- nada disso anima), moldura, rebites e VIGIA com o
+   avatar dentro. F7: as chapas saem de vars --pod-* derivadas dos
+   tokens via color-mix -- no tema claro o pod vira metal claro
+   sozinho, sem bloco de override.
+   Overrides em (0,2,0)/(0,3,0) sobre o .hangar-pod base (0,1,0)
+   do torre-view.css: vencem independente da ordem do bundle; a
+   saida .hangar-cap-leaving (0,3,0, secao abaixo) continua
+   vencendo nas props dela. Hover/focus/transicao do pod ficam
+   os do torre-view.css (mesma animacao de antes).
+   ------------------------------------------------------------ */
+.hangar-strip .hangar-pod {
+  /* chapas do casco: hi = topo, lo = corpo; frame = moldura */
+  --pod-hull-hi: var(--border-strong);
+  --pod-hull-lo: color-mix(in srgb, var(--border-strong) 45%, var(--panel));
+  --pod-frame: color-mix(in srgb, var(--border-strong) 82%, var(--text));
+  --pod-rivet: var(--dim);
+  position: relative;
+  gap: 6px;
+  padding: 0 9px 0 6px;
+  border: 1px solid var(--pod-frame);
+  border-radius: 3px;
+  background: linear-gradient(
+    to bottom,
+    var(--pod-hull-hi) 0%,
+    var(--pod-hull-hi) 30%,
+    var(--pod-hull-lo) 30%
+  );
+  box-shadow: inset 0 -1px 0 var(--shadow);
+}
+
+/* selecao re-declarada em (0,3,0): o override de borda acima nao
+   pode engolir a borda na cor do projeto do torre-view.css */
+.hangar-strip .hangar-pod.is-selected {
+  border-color: var(--pod-color, var(--accent));
+}
+
+/* rebites do casco: 2 pixels metalicos no topo direito (estatico) */
+.hangar-strip .hangar-pod::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  right: 4px;
+  width: 2px;
+  height: 2px;
+  background: var(--pod-rivet);
+  box-shadow: -5px 0 0 var(--pod-rivet);
+  pointer-events: none;
+}
+
+/* vigia: janela do pod com moldura metalica e vidro frio; o avatar
+   mini fica DENTRO (overflow hidden corta no caixilho) */
+.hangar-strip .hangar-vigia {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 24px;
+  border: 2px solid var(--pod-frame);
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--cyan) 18%, transparent);
+  overflow: hidden;
+}
+
+/* ------------------------------------------------------------
+   saida de capsula do hangar (F5.7): a sessao que encerrou fica
+   retida ~200ms no DOM com esta classe -- fade + queda de 8px em
+   160ms (transform/opacity only) antes do desmonte. Especificidade
+   (0,3,0) de proposito: vence .hangar-pod/.hangar-pod:hover do
+   torre-view.css independente da ordem dos arquivos no bundle.
+   ------------------------------------------------------------ */
+.hangar-strip .hangar-pod.hangar-cap-leaving {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 160ms ease, transform 160ms ease;
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------
+   reduced motion: nada anima, posicoes snap (o rAF continua so
+   sincronizando posicao com o canvas, sem transicao)
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .fleet-chip {
+    transition: none;
+  }
+
+  .fleet-card {
+    animation: none;
+  }
+
+  .fm-log-row.is-link,
+  .fm-btn,
+  .fm-io-fill {
+    transition: none;
+  }
+
+  .fm-log-row.is-link:hover,
+  .fm-btn:hover {
+    transform: none;
+  }
+
+  /* o mini-pod (casco/vigia/rebites) e 100% estatico -- nada novo a
+     desligar aqui; hover/transicao base do .hangar-pod ja sao zerados
+     pelo bloco reduced-motion do torre-view.css */
+}

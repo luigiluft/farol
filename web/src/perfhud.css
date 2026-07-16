@@ -1,0 +1,56 @@
+/* FAROL - HUD de performance sobre o grafo. Canto superior-esquerdo,
+   tematizado via tokens do app. Nao intercepta o pan/zoom do universo
+   exceto na propria caixa (hover mostra os titles). */
+.perfhud {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 10px;
+  min-width: 132px;
+  background: color-mix(in srgb, var(--panel) 82%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  backdrop-filter: blur(6px);
+  font-family: var(--font-mono);
+  box-shadow: 0 6px 18px var(--shadow);
+  pointer-events: auto;
+  user-select: none;
+}
+
+.perfhud-row { display: grid; grid-template-columns: 26px 1fr 34px; gap: 6px; align-items: center; }
+.perfhud-k { font-size: 8px; letter-spacing: .12em; color: var(--dim); text-transform: uppercase; }
+.perfhud-bar { height: 6px; background: color-mix(in srgb, var(--border) 70%, transparent); border-radius: 3px; overflow: hidden; }
+.perfhud-fill { display: block; height: 100%; border-radius: 3px; transform-origin: left; background: var(--accent); transition: transform .4s ease; }
+.perfhud-fill.warn { background: var(--amber, #e0a52e); }
+.perfhud-fill.crit { background: var(--crit, #e5534b); }
+.perfhud-v { font-size: 10px; color: var(--text-strong); text-align: right; }
+
+/* linha de tokens ao vivo: TOK <hoje grande> <1h dim>. Sem barra — token
+   nao tem teto natural; o numero E o sinal (atualiza a cada 2s via SSE). */
+.perfhud-tok {
+  display: grid;
+  grid-template-columns: 26px 1fr auto;
+  gap: 6px;
+  align-items: baseline;
+  margin-top: 2px;
+  padding-top: 5px;
+  border-top: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+}
+.perfhud-tok .perfhud-k { display: flex; align-items: center; gap: 4px; align-self: center; }
+.perfhud-tok-today { font-size: 12px; color: var(--accent); font-weight: 600; letter-spacing: .02em; }
+.perfhud-tok-hour { font-size: 9px; color: var(--dim); text-align: right; }
+.perfhud-pulse { width: 5px; height: 5px; border-radius: 50%; background: var(--border); flex: 0 0 auto; }
+.perfhud-pulse.on { background: var(--accent); box-shadow: 0 0 5px var(--accent); animation: perfhud-pulse 1.4s ease-in-out infinite; }
+@keyframes perfhud-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .perfhud-pulse.on { animation: none; } }
+
+.perfhud-foot { font-size: 9px; color: var(--dim); display: flex; gap: 4px; padding-left: 2px; }
+
+/* mobile: um pouco menor e mais colado no canto */
+@media (max-width: 700px) {
+  .perfhud { top: 8px; left: 8px; min-width: 118px; padding: 6px 8px; }
+}

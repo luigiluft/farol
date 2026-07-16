@@ -1,0 +1,26 @@
+/* FAROL - leitor de .base (Path 1). Theme-safe: cores via currentColor +
+   color-mix + var(--accent) com fallback, sem hardcode de paleta. */
+.base-view { padding: 18px 22px; max-width: 1120px; }
+.base-head { margin-bottom: 14px; }
+.base-title { font-size: 1.5rem; margin: 0 0 10px; }
+.base-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+.base-tab-count { font-size: .8em; }
+.base-scroll { overflow: auto; }
+.base-group { margin-bottom: 18px; }
+.base-group-head { font-size: .82rem; text-transform: uppercase; letter-spacing: .06em; margin: 14px 0 6px; opacity: .85; }
+.base-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+.base-table th { text-align: left; font-weight: 600; font-size: .74rem; text-transform: uppercase; letter-spacing: .04em; padding: 6px 10px; border-bottom: 1px solid color-mix(in srgb, currentColor 20%, transparent); opacity: .7; white-space: nowrap; }
+.base-table td { padding: 7px 10px; border-bottom: 1px solid color-mix(in srgb, currentColor 9%, transparent); vertical-align: top; }
+.base-row { cursor: pointer; }
+.base-row:hover td { background: color-mix(in srgb, var(--accent, currentColor) 9%, transparent); }
+.base-cell-name { font-weight: 600; color: var(--accent, currentColor); }
+.base-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+.base-card { display: flex; flex-direction: column; gap: 4px; text-align: left; padding: 12px 14px; border: 1px solid color-mix(in srgb, currentColor 14%, transparent); border-radius: 10px; background: color-mix(in srgb, currentColor 3%, transparent); cursor: pointer; font: inherit; color: inherit; }
+.base-card:hover { border-color: color-mix(in srgb, var(--accent, currentColor) 45%, transparent); background: color-mix(in srgb, var(--accent, currentColor) 7%, transparent); }
+.base-card-title { font-weight: 600; }
+.base-card-field { font-size: .82rem; }
+.base-state, .base-empty { padding: 28px 22px; }
+.base-skel { padding: 22px; display: flex; flex-direction: column; gap: 10px; }
+.base-skel .skel { height: 16px; border-radius: 6px; }
+.base-warn { margin-top: 16px; font-size: .8rem; }
+.base-warn ul { margin: 6px 0 0; padding-left: 18px; }

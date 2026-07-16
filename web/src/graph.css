@@ -1,0 +1,294 @@
+/* FAROL - graph.css (W-GRAPH, F7): grafo-universo em canvas.
+   Hard rules: DOM animation only transform/opacity; ASCII-only comments.
+   F7: every color comes from theme tokens (index.css C1.1) or color-mix
+   derivations, so light/dark both work without [data-theme] blocks here.
+   The canvas paints its own sky via canvasTheme(); the root background is
+   just the deep token behind it (also covers loading/error states). */
+
+.graph-root {
+  position: relative;
+  height: 100%;
+  min-height: 420px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--bg-deep);
+}
+
+/* embed mode (F4, embedded prop): full bleed inside TORRE view.
+   No frame nor HUD; interaction and tooltip stay. */
+.graph-root.embedded {
+  border: none;
+  border-radius: 0;
+  min-height: 0;
+}
+
+.graph-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: grab;
+  touch-action: none;
+}
+
+.graph-canvas.dragging {
+  cursor: grabbing;
+}
+
+/* deep edge vignette (static, zero cost); --shadow is theme-aware */
+.graph-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    transparent 46%,
+    color-mix(in srgb, var(--shadow) 55%, transparent) 76%,
+    var(--shadow) 100%
+  );
+}
+
+.graph-hud {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--dim);
+  pointer-events: none;
+}
+
+/* corner controls: beacon search + toggles */
+.graph-controls {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.graph-search {
+  width: 172px;
+  padding: 5px 11px;
+  background: color-mix(in srgb, var(--panel) 84%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.graph-search::placeholder {
+  color: var(--dim);
+}
+
+.graph-search:focus-visible {
+  outline: 1px solid var(--cyan);
+  outline-offset: 1px;
+}
+
+.graph-toggle {
+  padding: 5px 11px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--panel) 84%, transparent);
+  color: var(--dim);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: transform 120ms ease, opacity 120ms ease;
+}
+
+.graph-toggle:hover {
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+.graph-toggle:focus-visible {
+  outline: 1px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+.graph-toggle.on {
+  color: var(--cyan);
+  border-color: color-mix(in srgb, var(--cyan) 50%, transparent);
+}
+
+/* tooltip following the node (engine updates transform per frame) */
+.graph-tooltip {
+  position: absolute;
+  left: 0;
+  top: 0;
+  max-width: 290px;
+  padding: 8px 11px;
+  background: color-mix(in srgb, var(--panel) 94%, transparent);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 28px var(--shadow);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 120ms ease;
+  will-change: transform;
+  z-index: 4;
+}
+
+.graph-tooltip.show {
+  opacity: 1;
+}
+
+.graph-tt-title {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-strong);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.graph-tt-meta {
+  margin-top: 3px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--cyan);
+}
+
+.graph-tt-sub {
+  margin-top: 1px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--dim);
+}
+
+/* galaxy legend (local mode: neighbors keep their folder color) */
+.graph-legend {
+  position: absolute;
+  left: 12px;
+  bottom: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  max-width: 340px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--dim);
+  pointer-events: none;
+}
+
+.graph-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.graph-legend-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* states: loading / error / empty */
+.graph-state {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 24px;
+  text-align: center;
+}
+
+.graph-state-text {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text);
+}
+
+.graph-state-error {
+  color: var(--red);
+}
+
+.graph-state-detail {
+  margin: 0;
+  max-width: 420px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--dim);
+}
+
+.graph-retry {
+  padding: 6px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--cyan);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  transition: transform 120ms ease, opacity 120ms ease;
+}
+
+.graph-retry:hover {
+  transform: translateY(-1px);
+}
+
+.graph-retry:focus-visible {
+  outline: 1px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+/* loading radar: sweep rotates with transform only */
+.graph-radar {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  border-radius: 50%;
+}
+
+.graph-radar::before {
+  content: '';
+  position: absolute;
+  inset: 18px;
+  border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
+  border-radius: 50%;
+}
+
+.graph-radar::after {
+  content: '';
+  position: absolute;
+  inset: 36px;
+  border: 1px solid color-mix(in srgb, var(--accent) 14%, transparent);
+  border-radius: 50%;
+}
+
+.graph-radar-sweep {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    color-mix(in srgb, var(--accent) 30%, transparent) 0deg,
+    color-mix(in srgb, var(--accent) 4%, transparent) 70deg,
+    transparent 110deg
+  );
+  animation: graph-radar-spin 1.8s linear infinite;
+}
+
+@keyframes graph-radar-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .graph-radar-sweep {
+    animation: none;
+  }
+}

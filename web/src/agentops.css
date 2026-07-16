@@ -1,0 +1,553 @@
+/* ============================================================
+   FAROL - F9: painel OPERACOES "Foco + Stream" (variante C) +
+   blocos de contexto semantico do agente (MissionView).
+   Tokens DOM de index.css (--accent/--panel/--dim...); funciona nos
+   dois temas. Animacao SO transform/opacity. Comentarios SO ASCII.
+   ============================================================ */
+
+/* ---------------- narrativa do agente (briefing/prosa) ---------------- */
+.agent-narrative {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.an-lead {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--text);
+}
+.agent-narrative.compact .an-lead {
+  font-size: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.an-lead.an-dim {
+  color: var(--dim);
+  font-style: italic;
+}
+.an-sub {
+  margin: 0 0 6px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text);
+}
+.an-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.an-chip {
+  font: 500 11px/1.3 var(--font-mono);
+  color: var(--text);
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2px 7px;
+}
+.an-chip b {
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 8.5px;
+  letter-spacing: 0.5px;
+  margin-right: 4px;
+}
+.an-chip.an-now {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+}
+.an-chip.an-now b {
+  color: var(--accent);
+}
+.an-chip.an-falta b {
+  color: var(--amber);
+}
+.an-src {
+  font: 400 9.5px var(--font-mono);
+  color: var(--dim);
+  letter-spacing: 0.3px;
+}
+
+/* ---------------- checklist de missao ---------------- */
+.mission-check-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.mission-check {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.mc {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text);
+}
+.mc-box {
+  width: 13px;
+  height: 13px;
+  flex: 0 0 auto;
+  border-radius: 3px;
+  border: 1.5px solid var(--border-strong);
+  position: relative;
+}
+.mc.done .mc-box {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.mc.done .mc-box::after {
+  content: '';
+  position: absolute;
+  left: 3.5px;
+  top: 1px;
+  width: 3px;
+  height: 6px;
+  border: solid var(--panel);
+  border-width: 0 1.5px 1.5px 0;
+  transform: rotate(45deg);
+}
+.mc.now .mc-box {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+.mc.done .mc-text {
+  color: var(--dim);
+  text-decoration: line-through;
+}
+.mc.now .mc-text {
+  color: var(--text-strong);
+  font-weight: 600;
+}
+.mc-now {
+  margin-left: auto;
+  font: 700 8px var(--font-mono);
+  letter-spacing: 0.5px;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+.mc-count {
+  font: 500 9.5px var(--font-mono);
+  color: var(--dim);
+  letter-spacing: 0.4px;
+}
+
+/* ============================================================
+   painel AgentOps (variante C: foco + stream + medidores)
+   ============================================================ */
+.agent-ops {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* KPIs compactos no topo */
+.ao-kpis {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-deep);
+}
+.ao-kpi {
+  flex: 1;
+  padding: 8px 10px;
+  border-right: 1px solid var(--border);
+  font: 500 9.5px var(--font-mono);
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--dim);
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+}
+.ao-kpi:last-child {
+  border-right: 0;
+}
+.ao-kpi b {
+  font: 700 18px var(--font-mono);
+  line-height: 1;
+  color: var(--text-strong);
+}
+.ao-kpi.ao-work b {
+  color: var(--accent);
+}
+.ao-kpi.ao-wait b {
+  color: var(--ready);
+}
+
+/* cartao do agente em foco */
+.ao-focus {
+  border-bottom: 1px solid var(--border);
+  background:
+    radial-gradient(420px 200px at 0% 0%, color-mix(in srgb, var(--proj, var(--accent)) 9%, transparent), transparent 70%);
+}
+.ao-focus-head {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 11px 12px 8px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  color: inherit;
+}
+.ao-focus-head:hover {
+  background: var(--hover);
+}
+.ao-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  background: var(--dim);
+}
+.ao-dot.fb-st-voo {
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent);
+}
+.ao-dot.fb-st-espera,
+.ao-dot.fb-st-feito {
+  background: var(--ready);
+}
+.ao-dot.fb-st-taxi,
+.ao-dot.fb-st-carga {
+  background: var(--amber);
+}
+.ao-dot.fb-st-dorm {
+  background: var(--dim);
+}
+.ao-call {
+  font: 700 14px var(--font-mono);
+  color: var(--text-strong);
+}
+.ao-proj {
+  font: 500 10px var(--font-mono);
+  color: var(--cyan);
+  background: color-mix(in srgb, var(--cyan) 13%, transparent);
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+.ao-pill {
+  font: 700 9px var(--font-mono);
+  letter-spacing: 0.4px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  color: var(--dim);
+  background: color-mix(in srgb, var(--dim) 16%, transparent);
+}
+.ao-pill.fb-st-voo {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+.ao-pill.fb-st-espera,
+.ao-pill.fb-st-feito {
+  color: var(--ready);
+  background: color-mix(in srgb, var(--ready) 14%, transparent);
+}
+.ao-pill.fb-st-taxi,
+.ao-pill.fb-st-carga {
+  color: var(--amber);
+  background: color-mix(in srgb, var(--amber) 14%, transparent);
+}
+.ao-model {
+  margin-left: auto;
+  font: 400 9.5px var(--font-mono);
+  color: var(--dim);
+}
+.ao-focus-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 4px 12px 13px;
+}
+.ao-tool {
+  font: 400 10px var(--font-mono);
+  color: var(--dim);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.ao-tool-caret {
+  color: var(--border-strong);
+}
+.ao-stats {
+  display: flex;
+  gap: 16px;
+  margin: 2px 0 0;
+  padding-top: 9px;
+  border-top: 1px solid var(--border);
+}
+.ao-stats div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.ao-stats dt {
+  font: 500 8.5px var(--font-mono);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--dim);
+  order: 2;
+}
+.ao-stats dd {
+  margin: 0;
+  font: 600 13px var(--font-mono);
+  color: var(--text-strong);
+  order: 1;
+}
+
+/* ---------------- arvore de subagentes (nave em foco) ---------------- */
+.ao-subs {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 2px;
+  padding-top: 9px;
+  border-top: 1px solid var(--border);
+}
+.ao-subs-h {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ao-subs-h .l {
+  font: 700 9px var(--font-mono);
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+.ao-subs-h .c {
+  font: 600 9px var(--font-mono);
+  color: var(--accent);
+}
+.ao-subtree {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  max-height: 192px;
+  overflow-y: auto;
+}
+.ao-sub {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 2px;
+}
+.ao-sub + .ao-sub {
+  border-top: 1px solid var(--border);
+}
+.ao-sub-led {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  background: var(--border-strong);
+}
+.ao-sub.on .ao-sub-led {
+  background: var(--accent);
+  box-shadow: 0 0 5px var(--accent);
+}
+.ao-sub-call {
+  font: 700 10.5px var(--font-mono);
+  color: var(--text-strong);
+  flex: 0 0 auto;
+  min-width: 52px;
+}
+.ao-sub-type {
+  font: 500 9px var(--font-mono);
+  color: var(--dim);
+  flex: 0 0 auto;
+  max-width: 96px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ao-sub-tool {
+  font: 700 8px var(--font-mono);
+  letter-spacing: 0.3px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  flex: 0 0 auto;
+  color: var(--cyan);
+  background: color-mix(in srgb, var(--cyan) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--cyan) 25%, transparent);
+}
+.ao-sub-tool.st-search {
+  color: var(--violet);
+  background: color-mix(in srgb, var(--violet) 12%, transparent);
+  border-color: color-mix(in srgb, var(--violet) 22%, transparent);
+}
+.ao-sub-tool.st-write {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+.ao-sub-tool.st-shell {
+  color: var(--amber);
+  background: color-mix(in srgb, var(--amber) 12%, transparent);
+  border-color: color-mix(in srgb, var(--amber) 22%, transparent);
+}
+.ao-sub-tool.st-idle {
+  color: var(--dim);
+  background: none;
+  border-color: var(--border);
+}
+.ao-sub-act {
+  flex: 1;
+  min-width: 0;
+  font: 400 10px var(--font-mono);
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ao-sub:not(.on) .ao-sub-act {
+  color: var(--dim);
+}
+.ao-subs-more {
+  font: 500 9.5px var(--font-mono);
+  color: var(--dim);
+  padding: 3px 2px 0;
+}
+
+/* stream dos demais agentes */
+.ao-stream-wrap {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.ao-sub-h {
+  margin: 0;
+  padding: 8px 12px 5px;
+  font: 700 10px var(--font-mono);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+.ao-stream {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  max-height: 240px;
+}
+.ao-srow {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 0;
+  border-top: 1px solid var(--border);
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  color: inherit;
+}
+.ao-srow:hover {
+  background: var(--hover);
+}
+.ao-scall {
+  font: 700 11px var(--font-mono);
+  color: var(--text-strong);
+  width: 62px;
+  flex: 0 0 auto;
+}
+.ao-snar {
+  flex: 1;
+  min-width: 0;
+  font-size: 11px;
+  color: var(--dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ao-stok {
+  font: 500 10.5px var(--font-mono);
+  color: var(--text);
+  flex: 0 0 auto;
+}
+.ao-empty {
+  padding: 22px 12px;
+  text-align: center;
+  font: 400 11px var(--font-mono);
+  color: var(--dim);
+}
+
+/* medidores de maquina (cluster no rodape) */
+.ao-gauges {
+  display: flex;
+  gap: 0;
+  border-top: 1px solid var(--border);
+  background: var(--bg-deep);
+  margin-top: auto;
+}
+.ao-gauge {
+  flex: 1;
+  padding: 9px 6px;
+  text-align: center;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.ao-gauge:last-child {
+  border-right: 0;
+}
+.ao-ring {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  --ring-c: var(--cyan);
+  background: conic-gradient(var(--ring-c) calc(var(--p) * 1%), var(--border) 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.ao-ring::after {
+  content: '';
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--bg-deep);
+}
+.ao-ring-v {
+  position: relative;
+  z-index: 1;
+  font: 600 9px var(--font-mono);
+  color: var(--text);
+}
+.ao-ring.ao-ok {
+  --ring-c: var(--accent);
+}
+.ao-ring.ao-warn {
+  --ring-c: var(--amber);
+}
+.ao-ring.ao-crit {
+  --ring-c: var(--red);
+}
+.ao-gv {
+  font: 600 13px var(--font-mono);
+  color: var(--text);
+}
+.ao-gl {
+  font: 500 8px var(--font-mono);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--dim);
+}

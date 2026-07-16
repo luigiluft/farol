@@ -1,0 +1,40 @@
+/* FAROL - Olho da IA v3: fluxo de ações dos drones (Cockpit). Tokens de
+   index.css (--cyan/--accent/--amber/--violet/--dim). Cor do chip = classe da
+   ferramenta (mesmo mapa do agentops .st-*). */
+.flx { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
+.flx-pulse { display: flex; gap: 0; border-bottom: 1px solid var(--border); flex: none; }
+.flx-pulse div { flex: 1; padding: 8px 12px; border-right: 1px solid var(--border);
+  display: flex; align-items: baseline; gap: 6px; }
+.flx-pulse div:last-child { border-right: 0; }
+.flx-pn { font-family: var(--font-mono); font-size: 18px; font-weight: 700;
+  font-variant-numeric: tabular-nums; line-height: 1; }
+.flx-pn.st-read { color: var(--cyan); } .flx-pn.st-shell { color: var(--amber); }
+.flx-pn.st-write { color: var(--accent); } .flx-pn.st-search { color: var(--violet); }
+.flx-pl { font-family: var(--font-mono); font-size: 10px; color: var(--dim); }
+.flx-lanes { flex: 1; overflow-y: auto; }
+.flx-lane { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+.flx-lane:last-child { border-bottom: 0; }
+.flx-lane.idle { opacity: .55; }
+.flx-h { display: flex; align-items: center; gap: 8px; }
+.flx-led { width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
+  box-shadow: 0 0 7px var(--accent); flex: none; }
+.flx-lane.idle .flx-led { background: var(--dim); box-shadow: none; }
+.flx-dc { font-family: var(--font-mono); font-weight: 700; color: var(--text-strong); font-size: 13px; }
+.flx-ty { font-family: var(--font-mono); font-size: 10px; color: var(--violet); }
+.flx-say { font-size: 12.5px; color: var(--text); margin: 4px 0 7px 16px; }
+.flx-say::before { content: '\203A '; color: var(--accent); }
+.flx-tape { display: flex; align-items: center; gap: 6px; margin-left: 16px; overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 40px);
+  mask-image: linear-gradient(90deg, transparent 0, #000 40px); }
+.flx-chip { font-family: var(--font-mono); font-size: 11px; padding: 3px 8px; border-radius: 4px;
+  white-space: nowrap; flex: none; border: 1px solid transparent; }
+.flx-chip.st-read { color: var(--cyan); background: color-mix(in srgb, var(--cyan) 12%, transparent); }
+.flx-chip.st-write { color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.flx-chip.st-shell { color: var(--amber); background: color-mix(in srgb, var(--amber) 13%, transparent); }
+.flx-chip.st-search { color: var(--violet); background: color-mix(in srgb, var(--violet) 13%, transparent); }
+.flx-chip.st-idle { color: var(--dim); }
+.flx-chip.now { font-weight: 700; border-color: currentColor;
+  box-shadow: 0 0 0 1px currentColor, 0 0 12px -3px currentColor; }
+.flx-chip .g { opacity: .7; margin-right: 4px; }
+.flx-empty { flex: 1; display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 12px; color: var(--dim); }

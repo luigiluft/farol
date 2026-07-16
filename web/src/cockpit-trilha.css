@@ -1,0 +1,60 @@
+/* TRILHA v2 - ledger com mídia compacta em destaque. Theme-safe: tokens só. */
+.ck-trilha { --cat-criou: var(--accent); --cat-viu: var(--cyan); --cat-acessou: var(--violet); }
+
+.ckt-totals { display: flex; gap: 12px; margin-left: auto; font-size: 11px; color: var(--dim); }
+.ckt-tot b { font-weight: 700; }
+.ckt-tot.criou b { color: var(--cat-criou); }
+.ckt-tot.viu b { color: var(--cat-viu); }
+.ckt-tot.acessou b { color: var(--cat-acessou); }
+.ckt-tot.rodou b { color: var(--text); }
+
+.ckt-filters { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+.ckt-chip {
+  border: 1px solid var(--border); border-radius: 99px; padding: 3px 11px; cursor: pointer;
+  color: var(--dim); background: none; font-family: var(--font-mono); font-size: 11px;
+}
+.ckt-chip.on { border-color: var(--accent); color: var(--accent); }
+.ckt-chip:not(.on):hover { color: var(--text-strong); background: var(--hover); }
+.ckt-chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.ckt-ledger { overflow-y: auto; flex: 1; min-height: 0; padding: 6px 8px 16px; }
+.ckt-row {
+  display: grid; grid-template-columns: 44px 66px minmax(0, 1fr); gap: 10px;
+  align-items: baseline; padding: 4px 6px; border-radius: 5px; border-left: 2px solid transparent;
+}
+.ckt-row:hover { background: var(--hover); }
+.ckt-row.media { align-items: start; padding: 7px 6px; }
+.ckt-row.media[data-cat='criou'] { border-left-color: var(--cat-criou); }
+.ckt-row.media[data-cat='viu'] { border-left-color: var(--cat-viu); }
+.ckt-t { color: var(--dim); font-size: 10px; }
+.ckt-badge {
+  font-size: 9px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700;
+  padding: 1px 6px; border-radius: 3px; justify-self: start;
+}
+.ckt-badge.criou { background: color-mix(in srgb, var(--cat-criou) 18%, transparent); color: var(--cat-criou); }
+.ckt-badge.viu { background: color-mix(in srgb, var(--cat-viu) 18%, transparent); color: var(--cat-viu); }
+.ckt-badge.acessou { background: color-mix(in srgb, var(--cat-acessou) 18%, transparent); color: var(--cat-acessou); }
+.ckt-badge.rodou { background: color-mix(in srgb, var(--dim) 22%, transparent); color: var(--text); }
+.ckt-what { min-width: 0; font-size: 12px; color: var(--text); }
+.ckt-verb { color: var(--text-strong); }
+.ckt-tgt { color: var(--dim); word-break: break-all; }
+
+/* chip de mídia: pequeno, em destaque (borda na cor da categoria), expande */
+.ckt-mth {
+  margin-top: 6px; display: inline-flex; align-items: center; gap: 10px; max-width: 100%;
+  border: 1px solid color-mix(in srgb, var(--cat-viu) 50%, transparent);
+  background: color-mix(in srgb, var(--cat-viu) 8%, transparent);
+  border-radius: 6px; padding: 4px 10px 4px 4px; cursor: pointer;
+  font-family: var(--font-mono); color: var(--text);
+}
+.ckt-row[data-cat='criou'] .ckt-mth {
+  border-color: color-mix(in srgb, var(--cat-criou) 50%, transparent);
+  background: color-mix(in srgb, var(--cat-criou) 8%, transparent);
+}
+.ckt-mth:hover { border-color: var(--cat-viu); }
+.ckt-row[data-cat='criou'] .ckt-mth:hover { border-color: var(--cat-criou); }
+.ckt-mth:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.ckt-mth img, .ckt-mth video { width: 96px; height: 54px; object-fit: cover; border-radius: 4px; display: block; flex: none; }
+.ckt-mcap { font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 340px; }
+.ckt-mex { color: var(--cat-viu); font-size: 14px; flex: none; }
+.ckt-row[data-cat='criou'] .ckt-mex { color: var(--cat-criou); }

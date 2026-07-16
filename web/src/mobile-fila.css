@@ -1,0 +1,102 @@
+/* ============================================================
+   FAROL - shell MOBILE: FILA "esperando voce" (topo da aba Torre).
+   Strip rosa compacta que expande pra lista. Sinal --ready (rosa),
+   consistente com a cor-sinal de awaiting no resto do app. Reusa a
+   keyframe mb-wait-pulse (global em mobile.css).
+   ============================================================ */
+.mb-fila {
+  border: 1px solid color-mix(in srgb, var(--ready) 45%, var(--border));
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--ready) 8%, var(--panel));
+  overflow: hidden;
+}
+
+.mb-fila-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 12px;
+  text-align: left;
+  background: none;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-strong);
+}
+
+.mb-fila-dot {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--ready);
+  box-shadow: 0 0 6px var(--ready);
+  animation: mb-wait-pulse 1.3s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .mb-fila-dot { animation: none; }
+}
+
+.mb-fila-count {
+  font-weight: 700;
+  color: var(--ready);
+  letter-spacing: 0.02em;
+}
+
+.mb-fila-oldest {
+  color: var(--dim);
+  font-size: 11px;
+}
+
+.mb-fila-chev {
+  margin-left: auto;
+  color: var(--dim);
+  font-size: 14px;
+}
+
+.mb-fila-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 4px 8px 8px;
+  list-style: none;
+  border-top: 1px solid color-mix(in srgb, var(--ready) 25%, var(--border));
+}
+
+.mb-fila-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 8px;
+  text-align: left;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--mb-accent, var(--ready));
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+
+.mb-fila-call {
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  color: var(--text-strong);
+  letter-spacing: 0.04em;
+  flex: 0 0 auto;
+}
+
+.mb-fila-ago {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ready);
+  flex: 0 0 auto;
+}
+
+.mb-fila-act {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--dim);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

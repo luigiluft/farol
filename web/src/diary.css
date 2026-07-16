@@ -1,0 +1,161 @@
+/* FAROL - Diario (Frente 1). Usa os tokens de tema do index.css; a cor da
+   spine vem de --dc-accent (paleta de projeto, nao theme-ada por contrato). */
+
+.diary {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 18px 22px 60px;
+}
+
+.diary-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.diary-title h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-strong);
+}
+
+.diary-sub {
+  font-size: 12px;
+}
+
+.diary-refresh {
+  border: 1px solid var(--border);
+  background: var(--panel-2);
+  color: var(--text);
+  border-radius: var(--radius);
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 120ms ease, color 120ms ease;
+}
+.diary-refresh:hover:not(:disabled) { border-color: var(--cyan); color: var(--text-strong); }
+.diary-refresh:disabled { opacity: 0.55; cursor: default; }
+
+.diary-state {
+  padding: 28px 4px;
+  font-size: 13px;
+}
+
+.diary-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ---- cartao ---- */
+.dc {
+  position: relative;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--dc-accent, var(--border-strong));
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  box-shadow: 0 1px 3px var(--shadow);
+}
+.dc-live { border-color: color-mix(in srgb, var(--accent) 50%, var(--border)); }
+
+.dc-main {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+}
+
+.dc-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  margin-bottom: 7px;
+}
+.dc-proj { font-weight: 600; color: var(--dc-accent, var(--text-strong)); }
+.dc-call { color: var(--text); font-family: var(--font-mono); font-size: 11px; }
+.dc-when { margin-left: auto; font-size: 11px; }
+
+.dc-livedot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 60%, transparent);
+  animation: dc-pulse 1.6s ease-out infinite;
+}
+@keyframes dc-pulse {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 55%, transparent); }
+  70% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--accent) 0%, transparent); }
+  100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 0%, transparent); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dc-livedot { animation: none; }
+}
+
+.dc-hero {
+  display: block;
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--text-strong);
+}
+.dc-hero-live { color: var(--text); font-style: italic; }
+
+.dc-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 11px;
+}
+.dc-chip {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--dim);
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2px 7px;
+  line-height: 1.5;
+}
+.dc-chip-ship { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 35%, var(--border)); }
+.dc-chip-pend { color: var(--ready); border-color: color-mix(in srgb, var(--ready) 35%, var(--border)); }
+.dc-chip-link { cursor: pointer; color: var(--cyan); }
+.dc-chip-link:hover { border-color: var(--cyan); }
+
+/* ---- expand ---- */
+.dc-expand {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+.dc-sec p { margin: 3px 0 0; font-size: 13px; line-height: 1.5; color: var(--text); }
+.dc-sec-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--dim);
+}
+.dc-sec-pend p { color: var(--ready); }
+.dc-files {
+  margin: 4px 0 0;
+  padding-left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.dc-files li { font-size: 12px; color: var(--text); }

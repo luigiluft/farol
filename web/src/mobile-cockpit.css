@@ -1,0 +1,274 @@
+/* ============================================================
+   FAROL - shell MOBILE: aba COCKPIT (o olho da IA no celular).
+   Parede de tiles full-width + foco fullscreen. Reusa a keyframe
+   mb-wait-pulse (global em mobile.css).
+   ============================================================ */
+.mbc-body {
+  gap: 10px;
+}
+
+.mbc-wall {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mbc-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+  padding: 0;
+  text-align: left;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--mb-accent, var(--accent));
+  border-radius: var(--radius);
+  background: var(--panel);
+  overflow: hidden;
+  transition: transform 120ms ease;
+}
+.mbc-tile:active { transform: scale(0.99); }
+.mbc-tile.waiting {
+  border-color: color-mix(in srgb, var(--ready) 55%, var(--border));
+}
+
+.mbc-tile-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 11px;
+  min-width: 0;
+}
+
+.mbc-tile-call {
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  color: var(--text-strong);
+  letter-spacing: 0.05em;
+  flex: 0 0 auto;
+}
+
+.mbc-tile-proj {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--mb-accent, var(--dim));
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.mbc-tile-wait {
+  margin-left: auto;
+  flex: 0 0 auto;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ready);
+}
+
+.mbc-eye,
+.mbc-focus-eye {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background: var(--bg-deep);
+  border-top: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.mbc-eye-img,
+.mbc-focus-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+
+.mbc-eye-tail {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 12px;
+  height: 100%;
+  overflow: hidden;
+}
+
+.mbc-eye-tail .mbc-ln {
+  font-size: 11px;
+}
+
+.mbc-eye-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--dim);
+}
+
+.mbc-eye-cap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-strong);
+  background: color-mix(in srgb, var(--bg-deep) 82%, transparent);
+  border-top: 1px solid var(--border);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.mbc-rec {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 5px var(--red);
+  animation: mb-wait-pulse 1.6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .mbc-rec { animation: none; }
+}
+
+/* linhas do espelho (tile e foco) */
+.mbc-ln {
+  display: flex;
+  gap: 6px;
+  font-family: var(--font-mono);
+  color: var(--text);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.mbc-ln.user { color: var(--accent); }
+.mbc-ln.tool { color: var(--cyan); }
+.mbc-ln.result { color: var(--dim); }
+.mbc-ln.meta { color: var(--dim); }
+.mbc-mk {
+  flex: 0 0 auto;
+  color: var(--dim);
+  width: 10px;
+}
+
+/* FOCO fullscreen: olho grande + espelho scroll + voltar */
+.mbc-focus {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1 1 auto;
+  min-height: 0;
+  /* altura travada via JS (ver useEffect em CockpitFocus): o shell mobile so
+     tem min-height nos ancestros (crescem com o conteudo) - sem essa trava
+     local, .mbc-focus-mirror nunca fica de fato limitado e prosa rica fica
+     cortada pelo overflow:hidden do body, inalcancavel por scroll nenhum. */
+  overflow: hidden;
+  padding: 12px 12px calc(72px + env(safe-area-inset-bottom));
+}
+
+.mbc-focus-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.mbc-focus-call {
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  color: var(--text-strong);
+  letter-spacing: 0.05em;
+  flex: 0 0 auto;
+}
+
+.mbc-focus-proj {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--mb-accent, var(--dim));
+  flex: 0 0 auto;
+}
+
+.mbc-focus-doing,
+.mbc-focus-wait {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.mbc-focus-doing { color: var(--dim); }
+.mbc-focus-wait { color: var(--ready); flex: 0 0 auto; }
+
+.mbc-focus-eye {
+  aspect-ratio: 16 / 10;
+  border: 1px solid var(--mb-accent, var(--border));
+  border-radius: var(--radius);
+}
+
+.mbc-focus-mirror {
+  flex: 1 1 auto;
+  min-height: 120px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 12px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-deep);
+}
+.mbc-focus-mirror .mbc-ln { font-size: 12px; }
+
+/* linha 'text' (prosa do assistente): sai do nowrap/ellipsis das demais
+   linhas do espelho (que sao resumos curtos de 1 linha) - aqui o conteudo
+   e markdown real (ou texto cru multi-linha), precisa quebrar/crescer. */
+.mbc-focus-mirror .mbc-ln-prose {
+  align-items: flex-start;
+  white-space: normal;
+  overflow: visible;
+  min-width: 0;
+}
+.mbc-focus-mirror .mbc-ln-prose .pmd,
+.mbc-focus-mirror .mbc-ln-prose .mbc-prose-raw {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
+}
+.mbc-focus-mirror .mbc-ln-prose .mbc-prose-raw {
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+/* botao flutuante "voltar ao vivo": so aparece quando o usuario saiu do fim
+   e chegou linha nova (nao puxa quem esta lendo pra cima). */
+.mbc-back-to-live {
+  position: absolute;
+  left: 50%;
+  bottom: calc(84px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  padding: 5px 14px;
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  box-shadow: 0 4px 12px var(--shadow);
+}
+.mbc-back-to-live:active { transform: translateX(-50%) translateY(1px); }
