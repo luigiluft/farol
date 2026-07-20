@@ -9,3 +9,6 @@ server.out.log
 server.err.log
 .superpowers/
 .demo/
+
+# denylist literal do leakage-guard — nunca commitar (a lista seria o vazamento)
+.leakage-denylist

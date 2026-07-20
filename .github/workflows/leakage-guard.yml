@@ -1,0 +1,36 @@
+name: leakage-guard
+
+# Barra dado pessoal/de cliente antes de entrar no repo público.
+# CI roda só os padrões genéricos — a denylist literal é local e não commitada,
+# porque a própria lista seria o vazamento.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # histórico completo: a checagem de autor precisa de todos os commits
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: selftest dos padrões
+        run: node scripts/leakage-guard.mjs --selftest
+
+      - name: varrer arquivos versionados
+        run: node scripts/leakage-guard.mjs
+
+      # Grep de árvore é cego a metadado — este é o vetor que já quase vazou 2x.
+      - name: varrer autores de commit
+        run: node scripts/leakage-guard.mjs --authors
